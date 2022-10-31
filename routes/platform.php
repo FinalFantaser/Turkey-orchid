@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Orchid\Screens\Blog\ApartmentScreen;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
 use App\Orchid\Screens\Examples\ExampleChartsScreen;
 use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
@@ -29,18 +30,25 @@ use Tabuna\Breadcrumbs\Trail;
 |
 */
 
-// Main
-Route::screen('/main', PlatformScreen::class)
-    ->name('platform.main');
+Route::name('platform.')->group(function(){
+    // Главная страница
+    Route::screen('/main', PlatformScreen::class)->name('main');
 
-// Platform > Profile
-Route::screen('profile', UserProfileScreen::class)
-    ->name('platform.profile')
+    //  Квартиры
+    Route::prefix('apartments')->name('apartments.')->group(function(){
+        Route::screen('/sale', ApartmentScreen::class)->name('sale');
+    });
+
+    //  Профиль
+    Route::screen('profile', UserProfileScreen::class)
+    ->name('profile')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
             ->push(__('Profile'), route('platform.profile'));
     });
+});
+
 
 // Platform > System > Users
 Route::screen('users/{user}/edit', UserEditScreen::class)
@@ -95,21 +103,3 @@ Route::screen('roles', RoleListScreen::class)
             ->parent('platform.index')
             ->push(__('Roles'), route('platform.systems.roles'));
     });
-
-// Example...
-Route::screen('example', ExampleScreen::class)
-    ->name('platform.example')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push('Example screen');
-    });
-
-Route::screen('example-fields', ExampleFieldsScreen::class)->name('platform.example.fields');
-Route::screen('example-layouts', ExampleLayoutsScreen::class)->name('platform.example.layouts');
-Route::screen('example-charts', ExampleChartsScreen::class)->name('platform.example.charts');
-Route::screen('example-editors', ExampleTextEditorsScreen::class)->name('platform.example.editors');
-Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.example.cards');
-Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
-
-//Route::screen('idea', Idea::class, 'platform.screens.idea');

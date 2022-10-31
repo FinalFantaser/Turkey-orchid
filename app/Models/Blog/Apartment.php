@@ -4,7 +4,9 @@ namespace App\Models\Blog;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Http\Request;
 use Orchid\Attachment\Attachable;
+use Orchid\Attachment\Models\Attachment;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
 
@@ -46,7 +48,7 @@ class Apartment extends Model
         'price_rent' => 'integer',
         'price_m2' => 'integer',
         'area' => 'integer',
-        'rooms' => 'integer',
+        'rooms' => 'string',
         'bedrooms' => 'integer',
         'bathrooms' => 'integer',
         'floor' => 'integer',
@@ -74,8 +76,8 @@ class Apartment extends Model
         'total_floors' => 0,
 
         
-        'details' => [],
-        'location' => [],
+        'details' => '{}',
+        'location' => '{}',
     ];
 
     /**
@@ -83,7 +85,7 @@ class Apartment extends Model
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(related: Apartment::class, foreignKey: 'category_id');
+        return $this->belongsTo(related: Category::class, foreignKey: 'category_id');
     } //category
 
     /**

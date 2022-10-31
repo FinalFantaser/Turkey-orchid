@@ -26,7 +26,7 @@ return new class extends Migration
             $table->unsignedMediumInteger('price_rent')->default(0);
             $table->unsignedMediumInteger('price_m2')->default(0);
             $table->unsignedMediumInteger('area')->default(0);
-            $table->unsignedMediumInteger('rooms')->default(0);
+            $table->string('rooms')->default('0');
             $table->unsignedMediumInteger('bedrooms')->default(0);
             $table->unsignedMediumInteger('bathrooms')->default(0);
             $table->unsignedMediumInteger('floor')->default(0);
