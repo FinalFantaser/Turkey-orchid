@@ -6,8 +6,9 @@ abstract class Service{
     public function __construct()
     {} //Конструктор
 
-    public function query(callable $query): mixed
+    public function query(string $queryClassName): mixed
     {
+        $query = app($queryClassName);
         return $query();
     } //query
 };

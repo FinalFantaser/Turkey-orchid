@@ -17,8 +17,7 @@ class ApartmentController extends Controller
 
     public function test()
     {
-        $data = $this->service->query(app(TestQuery::class));
-
-        return $data->first()->title;
+        $data = $this->service->query(TestQuery::class);
+        return $data->links();
     } //test
 }
