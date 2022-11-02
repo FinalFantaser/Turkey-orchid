@@ -13,7 +13,8 @@
         "laravel/telescope": "^4.9",
         "laravel/tinker": "^2.7",
         "orchid/crud": "^3.8",
-        "orchid/platform": "^13.6"
+        "orchid/platform": "^13.6",
+        "spatie/laravel-medialibrary": "^10.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

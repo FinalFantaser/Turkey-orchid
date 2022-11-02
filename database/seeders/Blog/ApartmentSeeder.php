@@ -6,6 +6,7 @@ use App\Models\Blog\Apartment;
 use App\Models\Blog\Category;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class ApartmentSeeder extends Seeder
 {
@@ -56,7 +57,10 @@ class ApartmentSeeder extends Seeder
             ],
         ]);
 
-        //TODO Добавление фотографий
-        
+        //Добавление фотографий
+        for($i = 1; $i < 4; $i++){
+            $apt->addMediaFromDisk("seed/img$i.jpg", 'public')->toMediaCollection();
+            Storage::disk('public')->copy(from: "seed/_backup/img$i.jpg", to: "seed/img$i.jpg");
+        }
     }
 }

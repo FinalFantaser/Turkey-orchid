@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Admin\Blog\ApartmentController;
 use App\Orchid\Screens\Blog\ApartmentScreen;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
 use App\Orchid\Screens\Examples\ExampleChartsScreen;
@@ -36,7 +37,14 @@ Route::name('platform.')->group(function(){
 
     //  Квартиры
     Route::prefix('apartments')->name('apartments.')->group(function(){
-        Route::screen('/sale', ApartmentScreen::class)->name('sale');
+        Route::prefix('{apartment}')->group(function(){
+            Route::prefix('media')->name('media.')->group(function(){
+                Route::get('/delete/{imageIndex}', [ApartmentController::class, 'deleteImage'])->name('destroy');
+                Route::get('/show/{imageIndex}', [ApartmentController::class, 'showImage'])->name('show');
+            });
+        });
+        // Route::get('/{apartment}/media/delete/{imageIndex}', [ApartmentController::class, 'deleteImage'])->name('deleteImage');
+        // Route::get('/{apartment}/media/show/{imageIndex}', [ApartmentController::class, 'showImage'])->name('showImage');
     });
 
     //  Профиль
@@ -77,29 +85,29 @@ Route::screen('users', UserListScreen::class)
             ->push(__('Users'), route('platform.systems.users'));
     });
 
-// Platform > System > Roles > Role
-Route::screen('roles/{role}/edit', RoleEditScreen::class)
-    ->name('platform.systems.roles.edit')
-    ->breadcrumbs(function (Trail $trail, $role) {
-        return $trail
-            ->parent('platform.systems.roles')
-            ->push(__('Role'), route('platform.systems.roles.edit', $role));
-    });
+// // Platform > System > Roles > Role
+// Route::screen('roles/{role}/edit', RoleEditScreen::class)
+//     ->name('platform.systems.roles.edit')
+//     ->breadcrumbs(function (Trail $trail, $role) {
+//         return $trail
+//             ->parent('platform.systems.roles')
+//             ->push(__('Role'), route('platform.systems.roles.edit', $role));
+//     });
 
-// Platform > System > Roles > Create
-Route::screen('roles/create', RoleEditScreen::class)
-    ->name('platform.systems.roles.create')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.systems.roles')
-            ->push(__('Create'), route('platform.systems.roles.create'));
-    });
+// // Platform > System > Roles > Create
+// Route::screen('roles/create', RoleEditScreen::class)
+//     ->name('platform.systems.roles.create')
+//     ->breadcrumbs(function (Trail $trail) {
+//         return $trail
+//             ->parent('platform.systems.roles')
+//             ->push(__('Create'), route('platform.systems.roles.create'));
+//     });
 
-// Platform > System > Roles
-Route::screen('roles', RoleListScreen::class)
-    ->name('platform.systems.roles')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push(__('Roles'), route('platform.systems.roles'));
-    });
+// // Platform > System > Roles
+// Route::screen('roles', RoleListScreen::class)
+//     ->name('platform.systems.roles')
+//     ->breadcrumbs(function (Trail $trail) {
+//         return $trail
+//             ->parent('platform.index')
+//             ->push(__('Roles'), route('platform.systems.roles'));
+//     });

@@ -5,20 +5,14 @@ namespace App\Orchid\Resources\Blog;
 use App\Models\Blog\Apartment;
 use App\Models\Blog\Category;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Orchid\Crud\Resource;
 use Orchid\Crud\ResourceRequest;
-use Orchid\Screen\Fields\Cropper;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Matrix;
-use Orchid\Screen\Fields\NumberRange;
 use Orchid\Screen\Fields\Select;
-use Orchid\Screen\Fields\TextArea;
-use Orchid\Screen\Fields\Upload;
 use Orchid\Screen\Sight;
 use Orchid\Screen\TD;
 
@@ -30,6 +24,97 @@ class ApartmentResource extends Resource
      * @var string
      */
     public static $model = Apartment::class;
+
+
+    /**
+     * Get the displayable label of the resource.
+     *
+     * @return string
+     */
+    public static function label(): string
+    {
+        return 'Квартиры';
+    }
+
+    /**
+     * Get the displayable icon of the resource.
+     *
+     * @return string
+     */
+    public static function icon(): string
+    {
+        return 'building';
+    }
+
+    /**
+     * Get the text for the create resource button.
+     *
+     * @return string|null
+     */
+    public static function createButtonLabel(): string
+    {
+        return 'Добавить квартиру';
+    }
+
+    /**
+     * Get the text for the create resource toast.
+     *
+     * @return string
+     */
+    public static function createToastMessage(): string
+    {
+        return 'Квартира добавлена в базу данных';
+    }
+
+    /**
+     * Get the text for the update resource button.
+     *
+     * @return string
+     */
+    public static function updateButtonLabel(): string
+    {
+        return 'Обновить данные квартиры';
+    }
+
+    /**
+     * Get the text for the update resource toast.
+     *
+     * @return string
+     */
+    public static function updateToastMessage(): string
+    {
+        return 'Данные квартиры обновлены';
+    }
+
+    /**
+     * Get the text for the delete resource button.
+     *
+     * @return string
+     */
+    public static function deleteButtonLabel(): string
+    {
+        return 'Удалить квартиру';
+    }
+
+    /**
+     * Get the text for the delete resource toast.
+     *
+     * @return string
+     */
+    public static function deleteToastMessage(): string
+    {
+        return 'Квартира удалена из базы данных';
+    }
+
+    /**
+     * Get the text for the save resource button.
+     *
+     * @return string
+     */
+    public static function saveButtonLabel(): string
+    {
+        return 'Сохранить данные квартиры';
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -54,12 +139,18 @@ class ApartmentResource extends Resource
                 ->title('SEO-заголовок')
                 ->placeholder('SEO-заголовок'),
 
-            Upload::make('attachment')
+            // Upload::make('images')
+            //     ->title('Фотографии')
+            //     ->maxFileSize(2)
+            //     ->targetId()
+            //     ->targetRelativeUrl()
+            //     ->acceptedFiles('image/*'),
+
+            Input::make('images')
+                ->type('file')
+                ->multiple()
                 ->title('Фотографии')
-                ->maxFileSize(2)
-                ->targetId()
-                ->targetRelativeUrl()
-                ->acceptedFiles('image/*'),
+                ->maxFileSize(2),
 
             Group::make([
                 Input::make('address')
@@ -132,22 +223,22 @@ class ApartmentResource extends Resource
     public function rules(Model $model): array
     {
         return [
-            // 'category_id' => 'required|exists:categories,id',
-            // 'title' => 'required|string|max:256',
-            // 'seo_title' => 'required|string|max:256',
-            // 'address' => 'required|string|max:256',
-            // 'located_at' => 'required|string|max:256',
-            // 'price_sale' => 'required|integer|gte:0',
-            // 'price_rent' => 'required|integer|gte:0',
-            // 'price_m2' => 'required|integer|gte:0',
-            // 'area' => 'required|integer|gte:0',
-            // 'rooms' => 'required|string|max:256',
-            // 'bedrooms' => 'required|integer|gte:0',
-            // 'bathrooms' => 'required|integer|gte:0',
-            // 'floor' => 'required|integer|gte:0',
-            // 'total_floors' => 'required|integer|gte:0',
-            // 'details' => 'required|array|max:1024',
-            // 'location' => 'required|array|max:1024',
+            'category_id' => 'required|exists:categories,id',
+            'title' => 'required|string|max:256',
+            'seo_title' => 'string|max:256',
+            'address' => 'string|max:256',
+            'located_at' => 'string|max:256',
+            'price_sale' => 'integer|gte:0',
+            'price_rent' => 'integer|gte:0',
+            'price_m2' => 'integer|gte:0',
+            'area' => 'integer|gte:0',
+            'rooms' => 'string|max:256',
+            'bedrooms' => 'integer|gte:0',
+            'bathrooms' => 'integer|gte:0',
+            'floor' => 'integer|gte:0',
+            'total_floors' => 'integer|gte:0',
+            'details' => 'array|max:1024',
+            'location' => 'array|max:1024',
         ];
     }
 
@@ -159,15 +250,18 @@ class ApartmentResource extends Resource
     public function columns(): array
     {
         return [
-            // TD::make()
-            //     ->render(function($model){
-            //         $pic = $model->attachment()->first();
-            //         if(is_null($pic))
-            //             return 'Без изображения'; //TODO картинка по умолчанию
-            //         else
-            //             // return '<img src="' . $pic->url . '" alt="Миниатюра">';
-            //             return "<img src=\"$pic->url\" alt=\"Миниатюра\">";
-            //     }),
+            TD::make()
+                ->render(function($model){
+                    // $pic = $model->attachment()->first();
+                    // if(is_null($pic))
+                    //     return 'Без изображения'; //TODO картинка по умолчанию
+                    // else
+                    //     // return '<img src="' . $pic->url . '" alt="Миниатюра">';
+                    //     return "<img src=\"$pic->url\" alt=\"Миниатюра\">";
+                    $thumb = $model->getThumbAdmin();
+
+                    return "<img src=\"$thumb\" alt=\"Миниатюра\" class=\"img-thumbnail\">"; 
+                }),
 
             TD::make(title: 'Категория')
                 ->render(function($model){
@@ -197,14 +291,7 @@ class ApartmentResource extends Resource
     {
         return [
             Sight::make(title: 'Фото')->render(function($model){
-                if($model->attachment->isNotEmpty()){
-                    $arr = Arr::map(array: $model->attachment()->get()->all(),
-                    callback: function($value){
-                        return "<img src=\"{$value['url']}\">";
-                    });
-
-                    return Arr::join(array: $arr, glue: '');
-                }
+                return view('admin.partials.apartments.show_photos', ['photos' => $model->getThumbs(), 'apartment_id' => $model->id]);
             }),
 
             Sight::make(name: 'title', title: 'Название'),
@@ -249,7 +336,8 @@ class ApartmentResource extends Resource
      */
     public function filters(): array
     {
-        return [];
+        return [
+        ];
     }
 
     /**
@@ -274,13 +362,18 @@ class ApartmentResource extends Resource
 
     public function onSave(ResourceRequest $request, Apartment $model): void
     {
-        $model->attachment()->syncWithoutDetaching(
-            $request->input('attachment', [])
-        );
+        // $model->update($request->except('images')); //TODO Заменить на инструкция из репозитория
+        $model->fill($request->except('images')); //TODO Заменить на инструкция из репозитория
+        $model->save();
+
+        if($request->filled('images'))
+            foreach($request->input('images') as $key => $file)
+                $model->addMedia($request->input('images')[$key])->toMediaCollection();
     } //onSave
 
     public function onDelete(Apartment $model): void
     {
-        $model->attachment->each->delete();
+        $model->getMedia()->each->delete();
+        $model->delete();
     } //onDelete
 }
