@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Admin\Blog\ApartmentController;
+use App\Http\Controllers\Admin\DeleteLeadController;
 use App\Orchid\Screens\Blog\ApartmentScreen;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
 use App\Orchid\Screens\Examples\ExampleChartsScreen;
@@ -11,9 +12,11 @@ use App\Orchid\Screens\Examples\ExampleFieldsScreen;
 use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
 use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
+use App\Orchid\Screens\LeadScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
+use App\Orchid\Screens\SettingsScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
@@ -35,6 +38,13 @@ Route::name('platform.')->group(function(){
     // Главная страница
     Route::screen('/main', PlatformScreen::class)->name('main');
 
+    //  Настройки
+    Route::screen('/settings', SettingsScreen::class)->name('settings');
+
+    //  Лиды
+    Route::get('/leads/remove', DeleteLeadController::class)->name('leads.remove');
+    Route::screen('/leads', LeadScreen::class)->name('leads');
+
     //  Квартиры
     Route::prefix('apartments')->name('apartments.')->group(function(){
         Route::prefix('{apartment}')->group(function(){
@@ -43,8 +53,6 @@ Route::name('platform.')->group(function(){
                 Route::get('/show/{imageIndex}', [ApartmentController::class, 'showImage'])->name('show');
             });
         });
-        // Route::get('/{apartment}/media/delete/{imageIndex}', [ApartmentController::class, 'deleteImage'])->name('deleteImage');
-        // Route::get('/{apartment}/media/show/{imageIndex}', [ApartmentController::class, 'showImage'])->name('showImage');
     });
 
     //  Профиль

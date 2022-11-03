@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategorySeeder::class,
             ApartmentSeeder::class,
+            LeadSeeder::class,
+            SettingsSeeder::class,
         ]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Client\Blog\ApartmentController;
+use App\Http\Controllers\CreateLeadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,5 +19,5 @@ Route::get('/', function () {
 });
 
 Route::name('client.')->group(function(){
-    Route::get('/test', [ApartmentController::class, 'test'])->name('test');
+    Route::post('lead.add', CreateLeadController::class)->name('lead.add');
 });
