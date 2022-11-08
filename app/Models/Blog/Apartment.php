@@ -21,6 +21,8 @@ class Apartment extends Model implements HasMedia
 
         'title',
         'seo_title',
+        
+        'description',
 
         'address',
         'located_at',

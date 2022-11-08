@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Client\Blog\ApartmentController;
+use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\CreateLeadController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,10 +16,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::name('client.')->group(function(){
+    // Route::get('/', [ApartmentController::class, 'test'])->name('main');
+    Route::get('/', [HomeController::class, 'main'])->name('main');
+
     Route::post('lead.add', CreateLeadController::class)->name('lead.add');
 });

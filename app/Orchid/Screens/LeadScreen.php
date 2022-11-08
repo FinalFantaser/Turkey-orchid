@@ -84,6 +84,5 @@ class LeadScreen extends Screen
     {
         $this->repository->remove($lead);
         Alert::success('Лид удалён из базы данных');
-        // return redirect()->route('platform.leads');
     } //remove
 }

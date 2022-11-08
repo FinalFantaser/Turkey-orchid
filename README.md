@@ -23,6 +23,8 @@ php artisan migrate --seed
 ```sh
 php artisan orchid:install
 ```
+Выбрать ответ 'no'
+
 
 ```sh
 php artisan orchid:admin <имя> <e-mail> <пароль>

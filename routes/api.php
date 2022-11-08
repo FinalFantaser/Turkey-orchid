@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ApartmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::prefix('v1')->group(function(){
+    Route::prefix('apartments')->name('apartments.')->group(function(){
+        Route::get('sale', [ApartmentController::class, 'sale'])->name('sale');
+        Route::get('rent', [ApartmentController::class, 'rent'])->name('rent');
+        Route::get('show/{apartment}', [ApartmentController::class, 'show'])->name('show');
+    });
 });

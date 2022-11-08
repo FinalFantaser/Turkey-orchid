@@ -13,6 +13,7 @@ use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Matrix;
 use Orchid\Screen\Fields\Select;
+use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Sight;
 use Orchid\Screen\TD;
 
@@ -139,12 +140,9 @@ class ApartmentResource extends Resource
                 ->title('SEO-заголовок')
                 ->placeholder('SEO-заголовок'),
 
-            // Upload::make('images')
-            //     ->title('Фотографии')
-            //     ->maxFileSize(2)
-            //     ->targetId()
-            //     ->targetRelativeUrl()
-            //     ->acceptedFiles('image/*'),
+            TextArea::make('description')
+                ->title('Описание')
+                ->placeholder('Описание квартиры'),
 
             Input::make('images')
                 ->type('file')
@@ -225,6 +223,7 @@ class ApartmentResource extends Resource
         return [
             'category_id' => 'required|exists:categories,id',
             'title' => 'required|string|max:256',
+            'description' => 'string|max:1024',
             'seo_title' => 'string|max:256',
             'address' => 'string|max:256',
             'located_at' => 'string|max:256',
@@ -252,14 +251,7 @@ class ApartmentResource extends Resource
         return [
             TD::make()
                 ->render(function($model){
-                    // $pic = $model->attachment()->first();
-                    // if(is_null($pic))
-                    //     return 'Без изображения'; //TODO картинка по умолчанию
-                    // else
-                    //     // return '<img src="' . $pic->url . '" alt="Миниатюра">';
-                    //     return "<img src=\"$pic->url\" alt=\"Миниатюра\">";
                     $thumb = $model->getThumbAdmin();
-
                     return "<img src=\"$thumb\" alt=\"Миниатюра\" class=\"img-thumbnail\">"; 
                 }),
 
@@ -298,6 +290,7 @@ class ApartmentResource extends Resource
             Sight::make(title: 'Категория')->render(function($model){
                 return $model->category->title;
             }),
+            Sight::make(name: 'description', title: 'Описание'),
             Sight::make(name: 'address', title: 'Адрес'),
             Sight::make(name: 'located_at', title: 'Расположение'),
             Sight::make(name: 'price_sale', title: 'Цена продажи'),
@@ -362,7 +355,6 @@ class ApartmentResource extends Resource
 
     public function onSave(ResourceRequest $request, Apartment $model): void
     {
-        // $model->update($request->except('images')); //TODO Заменить на инструкция из репозитория
         $model->fill($request->except('images')); //TODO Заменить на инструкция из репозитория
         $model->save();
 

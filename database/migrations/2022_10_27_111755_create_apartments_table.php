@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(Category::class)->cascadeOnDelete();
             $table->string('title');
             $table->string('seo_title')->default('');
+            $table->text('description')->default('');
             $table->string('address')->default('');
             $table->string('located_at')->default('');
             $table->unsignedMediumInteger('price_sale')->default(0);

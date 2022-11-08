@@ -23,6 +23,7 @@ class ApartmentSeeder extends Seeder
         ],
         [
             'seo_title' => 'Квартира 180 м2',
+            'description' => 'Полностью мебелированная квартира планировки 3+1, 145 м2. 5 кондиционеров, 2 застекленных балкона и утроенная кухня.',
             'category_id' => Category::ID_SALE,
             'address' => 'Турция, Мерсин, Эрдемли',
             'located_at' => 'у моря, в большом городе',

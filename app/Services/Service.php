@@ -2,16 +2,17 @@
 
 namespace App\Services;
 
-abstract class Service{    
-    public function command(string $commandClassName)
+use App\Commands\Command;
+use App\Query\Query;
+
+class Service{    
+    public function command(Command $command)
     {
-        $command = app($commandClassName);
-        $command();
+        return $command();
     } //command
     
-    public function query(string $queryClassname)
+    public function query(Query $query)
     {
-        $query = app($queryClassname);
-        $query();
+        return $query();
     } //command
 };

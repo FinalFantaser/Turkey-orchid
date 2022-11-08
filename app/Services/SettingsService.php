@@ -14,7 +14,7 @@ class SettingsService{ //Класс является синглтоном
     
     private const _FILEPATH = 'settings.json';
     private const _DEFAULTS = [
-        'email_enabled' => true,
+        'email_enabled' => false,
         'email_host' => '<email_host>',
         'email_port' => '<email_port>',
         'email_username' => '<email_username>',

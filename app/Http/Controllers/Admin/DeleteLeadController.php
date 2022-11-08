@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Commands\Lead\RemoveCommand;
 use App\Http\Controllers\Controller;
-use App\Services\LeadService;
+use App\Services\Service;
 use Illuminate\Http\Request;
 
 
 class DeleteLeadController extends Controller
 {
     public function __construct(
-        private LeadService $service,
+        private Service $service,
     )
     {}
 
@@ -23,7 +23,10 @@ class DeleteLeadController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $this->service->command(RemoveCommand::class);
+        $this->service->command(
+            new RemoveCommand($request)
+        );
+        
         return back();
     }
 }

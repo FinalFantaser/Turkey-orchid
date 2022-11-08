@@ -2,21 +2,22 @@
 
 namespace App\Commands\Lead;
 
+use App\Commands\Command;
 use App\Http\Requests\LeadRequest;
 use App\Repositories\Lead\LeadRepository;
 use Illuminate\Http\Request;
 
-class CreateCommand{
-    private string $name;
-    private string $phone;
+class CreateCommand extends Command{
 
     public function __construct(
         LeadRequest $request,
-        private LeadRepository $repository,
+        // private LeadRepository $repository,
     )
     {
         $this->name = $request->name;
         $this->phone = $request->phone;
+
+        $this->_loadRepositories(['repository' => new LeadRepository]);
     } //Конструктор
 
     public function __invoke()
