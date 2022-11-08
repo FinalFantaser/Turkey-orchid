@@ -7,6 +7,10 @@ composer install
 php artisan key:generate
 ```
 
+```sh
+php artisan storage:link
+```
+
 #  Настройка базы данных
 ```sh
 cp .env.example .env
