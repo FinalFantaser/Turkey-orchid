@@ -8,7 +8,7 @@ use App\Query\Query;
 use App\Repositories\Blog\ApartmentReadRepository;
 
 class Sale extends Query{
-    private const PER_PAGE = 4;
+    private const PER_PAGE = 8;
 
     public function __construct()
     {
