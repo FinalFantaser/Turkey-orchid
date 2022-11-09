@@ -13,7 +13,7 @@ export default {
     actions: {
         async getCatalogSale({state}) {
 
-            await axios.get('api/v1/apartments/show/1', {
+            await axios.get('api/v1/apartments/sale', {
                 })
                 .then(function (response) {
                     state.catalogSale = response.data.data

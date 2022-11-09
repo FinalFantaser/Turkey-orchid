@@ -38,6 +38,7 @@
     {{-- Main --}}
     <main id="app">
         @yield('content')
+        <modal-det-app></modal-det-app>
     </main>
 
 

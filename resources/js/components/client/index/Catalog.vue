@@ -2,16 +2,16 @@
     <div v-for="card in stateCatalogSale" class="catalog__card">
         <div class="catalog__card__top">
             <div class="catalog__card__img">
-                <img :src="card.thumb" alt="flat">
+                <img :src="card.thumb.slider" alt="flat">
             </div>
 
-            <p class="catalog__card__title">Квартира 145 м2</p>
+            <p class="catalog__card__title">{{card.title}}</p>
 
-            <p class="catalog__card__description">Полностью мебелированная квартира планировки 3+1, 145 м2. 5 кондиционеров, 2 застекленных балкона и утроенная кухня.</p>
+            <p class="catalog__card__description">{{card.description}}</p>
         </div>
 
         <div class="catalog__card__bottom">
-            <p class="catalog__card__price">2 000 000 ₺</p>
+            <p class="catalog__card__price">{{sumMask(+card.price)}} ₺</p>
             <div data-modalDet class="catalog__card__details">
                 <span>Подробнее</span>&nbsp;
                 <img src="img/catalog/arrowDetail.png" alt="details">
@@ -22,6 +22,8 @@
 
 <script>
 import {slider} from "../../../assets/slider";
+import {modal} from "../../../assets/modal";
+
 
 export default {
     name: "Catalog",
@@ -33,6 +35,12 @@ export default {
         stateCatalogSale() {
             return this.$store.getters['catalogSale/stateCatalogSale']
         }
+    },
+    methods: {
+      sumMask(sum) {
+          const n = sum.toString();
+          return  n.replace(/(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g, "$1" + ' ')
+      }
     },
     async mounted() {
         await this.$store.dispatch('catalogSale/getCatalogSale')
@@ -48,6 +56,7 @@ export default {
             false,
             false
         );
+        modal('.modal-det', 'modal--active', '[data-modalDet]', '.modal-det__close');
     }
 }
 </script>
