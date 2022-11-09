@@ -33,7 +33,7 @@ class ApartmentFullResource extends JsonResource
             'details' => $this->details,
             'location' => $this->location,
 
-            'thumbs' => $this->getThumbs(),
+            'thumbs' =>  $this->getSliderThumbs(),            
             'images' => $this->getImages(),
         ];
     }

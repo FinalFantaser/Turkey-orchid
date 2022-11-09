@@ -17,7 +17,10 @@ class ApartmentBriefResource extends JsonResource
         // return parent::toArray($request);
 
         return [
-            'thumb' => $this->getThumb(),
+            'thumb' => [
+                'slider' => $this->getSliderThumb(),
+                'catalog' => $this->getCatalogThumb(),
+            ],
             'title' => $this->title,
             'description' => $this->description,
             'price' => $this->price,

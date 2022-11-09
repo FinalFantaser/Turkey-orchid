@@ -34,10 +34,10 @@ class SaleWithFilters extends Query{
     protected function _buildQuery(): LengthAwarePaginator
     {
         $query = $this->apartmentReadRepository->query()
-            // ->price($this->price_from, $this->price_to, Category::ID_SALE)
-            // ->sqm($this->m2_from, $this->m2_to)
+            ->price(category_id: Category::ID_SALE, from: $this->price_from, to: $this->price_to)
+            ->sqm($this->m2_from, $this->m2_to)
             // ->rooms($this->rooms)
-            // ->whereDate('created_at', $this->date)
+            ->whereDate('created_at', '>=', $this->date)
             ->paginate(self::PER_PAGE);
 
         return $query;
