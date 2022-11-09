@@ -1,8 +1,8 @@
 <template>
-    <div class="catalog__card">
+    <div v-for="card in stateCatalogSale" class="catalog__card">
         <div class="catalog__card__top">
             <div class="catalog__card__img">
-                <img src="img/catalog/img.png" alt="flat">
+                <img :src="card.thumb" alt="flat">
             </div>
 
             <p class="catalog__card__title">Квартира 145 м2</p>
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import {slider} from "../../../assets/slider";
+
 export default {
     name: "Catalog",
     data() {
@@ -28,10 +30,24 @@ export default {
         }
     },
     computed: {
-
+        stateCatalogSale() {
+            return this.$store.getters['catalogSale/stateCatalogSale']
+        }
     },
     async mounted() {
         await this.$store.dispatch('catalogSale/getCatalogSale')
+        slider(
+            '.catalog__window',
+            '.catalog__field',
+            '.catalog__card',
+            false,
+            false,
+            false,
+            '.catalog__wrap__arrow--prev',
+            '.catalog__wrap__arrow--next',
+            false,
+            false
+        );
     }
 }
 </script>
