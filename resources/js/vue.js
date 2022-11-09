@@ -1,8 +1,13 @@
 import {createApp} from 'vue'
-import TestApp from './components/Test.vue'
+import {store} from "./store";
+
+// components
+import IndexCatalogApp from './components/client/index/Catalog.vue'
 
 const app = createApp({components: {
-    TestApp
+    IndexCatalogApp
 }})
+
+app.use(store)
 
 app.mount("#app")
