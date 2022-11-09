@@ -95,7 +95,20 @@ class Apartment extends Model implements HasMedia
     ];
 
     /**
-     *      Преобразования
+     *      Фильтры поиска
+     */
+    public function scopeSale($query)
+    {
+        return $query->where('category_id', Category::ID_SALE);
+    } //scopeSale
+
+    public function scopeRent($query)
+    {
+        return $query->where('category_id', Category::ID_RENT);
+    } //scopeSale
+
+    /**
+     *      Преобразования изображений
      */
     public function registerMediaConversions(?Media $media = null): void
     {
