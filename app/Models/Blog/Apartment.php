@@ -109,7 +109,7 @@ class Apartment extends Model implements HasMedia
 
     public function scopePrice($query, int $category_id, int $from, int $to)
     {
-        $field = $category_id == Category::ID_SALE ? 'price_sale' : 'price_rent';
+        $field = $category_id === Category::ID_SALE ? 'price_sale' : 'price_rent';
 
         $query = $query->where('category_id', $category_id);
 
@@ -146,9 +146,14 @@ class Apartment extends Model implements HasMedia
         $this->addMediaConversion('thumb_admin')
             ->fit(Manipulations::FIT_STRETCH, 50, 50);
 
-        //Миниатюра для клиентской части
-        $this->addMediaConversion('thumb')
-            ->fit(Manipulations::FIT_MAX, 100, 100);
+        //Миниатюра для слайдера
+        $this->addMediaConversion('thumb_slider')
+            ->fit(Manipulations::FIT_MAX, 197, 151);
+
+        //Миниатюра для каталога
+        $this->addMediaConversion('thumb_catalog')
+            ->fit(Manipulations::FIT_MAX, 277, 300);
+
     } //registerMediaConversions
 
     /**
@@ -197,18 +202,33 @@ class Apartment extends Model implements HasMedia
         return $this->hasMedia() ? $this->getMedia()->first()->getUrl('thumb_admin') : null;
     } //getThumbAdmin
 
-    public function getThumbs(): array
+    public function getSliderThumbs(): array
     {
         if($this->hasMedia())
             return Arr::map(array: $this->getMedia()->all(), callback: function($item){
-                return $item->getUrl('thumb');
+                return $item->getUrl('thumb_slider');
             });
         else
             return [];
-    } //getThumbs
+    } //getSliderThumbs
 
-    public function getThumb(int $index = 0): string
+    public function getCatalogThumbs(): array
     {
-        return $this->getMedia()[$index]->getUrl('thumb');
-    } //getThumb
+        if($this->hasMedia())
+            return Arr::map(array: $this->getMedia()->all(), callback: function($item){
+                return $item->getUrl('thumb_catalog');
+            });
+        else
+            return [];
+    } //getSliderThumbs
+
+    public function getSliderThumb(int $index = 0): string
+    {
+        return $this->getMedia()[$index]->getUrl('thumb_slider');
+    } //getSliderThumb
+
+    public function getCatalogThumb(int $index = 0): string
+    {
+        return $this->getMedia()[$index]->getUrl('thumb_catalog');
+    } //getCatalogThumb
 }

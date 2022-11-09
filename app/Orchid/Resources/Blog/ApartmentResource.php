@@ -283,7 +283,7 @@ class ApartmentResource extends Resource
     {
         return [
             Sight::make(title: 'Фото')->render(function($model){
-                return view('admin.partials.apartments.show_photos', ['photos' => $model->getThumbs(), 'apartment_id' => $model->id]);
+                return view('admin.partials.apartments.show_photos', ['photos' => $model->getSliderThumbs(), 'apartment_id' => $model->id]);
             }),
 
             Sight::make(name: 'title', title: 'Название'),
