@@ -7,10 +7,12 @@ use App\Http\Resources\Blog\Apartment\ApartmentBriefResource;
 use App\Models\Blog\Category;
 use App\Query\Query;
 use App\Repositories\Blog\ApartmentReadRepository;
+use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class SaleWithFilters extends Query{
     protected const PER_PAGE = 8;
+    protected const CATEGORY = Category::ID_SALE;
 
     public function __construct(ApartmentSearchRequest $request)
     {
@@ -18,7 +20,7 @@ class SaleWithFilters extends Query{
         $this->price_to = $request->price_to;
         $this->m2_from = $request->m2_from;
         $this->m2_to = $request->m2_to;
-        $this->date = $request->date;
+        $this->date = Carbon::parse($request->date)->startOfDay();
         $this->rooms = $request->rooms;
 
         $this->_loadRepositories(ApartmentReadRepository::class);
@@ -34,11 +36,11 @@ class SaleWithFilters extends Query{
     protected function _buildQuery(): LengthAwarePaginator
     {
         $query = $this->apartmentReadRepository->query()
-            ->price(category_id: Category::ID_SALE, from: $this->price_from, to: $this->price_to)
+            ->price(category_id: static::CATEGORY, from: $this->price_from, to: $this->price_to)
             ->sqm($this->m2_from, $this->m2_to)
             // ->rooms($this->rooms)
             ->whereDate('created_at', '>=', $this->date)
-            ->paginate(self::PER_PAGE);
+            ->paginate(static::PER_PAGE);
 
         return $query;
     } //_buildQuery
