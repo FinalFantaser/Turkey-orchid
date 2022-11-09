@@ -1,3 +1,5 @@
+import {blink} from "./blink";
+
 //slider
 function slider(window, field, cards, dotsWrap, dotClass, dotClassActive, arrowPrev, arrowNext, arrowClass, progress, activeCard = false) {
     const window_ = document.querySelector(window),
@@ -13,6 +15,13 @@ function slider(window, field, cards, dotsWrap, dotClass, dotClassActive, arrowP
         sliderCounter = 0,
         dots_ = [],
         mouseMoveFlag = false;
+
+    // Очистка активного класаа
+    function clearActiveClass(arr, activeClass) {
+        arr.forEach(item => {
+            item.classList.remove(activeClass);
+        });
+    }
 
     if (window_) {
         // !--------------ФУНКЦИОНАЛ ИСКЛЮЧИТЕЛЬНО КАСТОМНЫЙ------------!
