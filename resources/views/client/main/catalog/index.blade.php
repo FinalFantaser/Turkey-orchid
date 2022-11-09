@@ -15,7 +15,7 @@
         <div class="catalog__window">
             <div class="catalog__field">
 
-                
+                <test-app></test-app>
 
             </div>
         </div>

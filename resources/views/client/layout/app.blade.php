@@ -9,13 +9,16 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{asset('favicon/apple-touch-icon.png')}}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{asset('img/favicon/favicon-32x32.png')}}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{asset('img/favicon/favicon-16x16.png')}}">
-    <link rel="manifest" href="{{asset('favicon/site.webmanifest')}}">
+    <link rel="manifest" href="{{asset('img/favicon/site.webmanifest')}}">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" href={{asset("css/style.css")}}>
-
     <title>{{config('app.name')}}</title>
+
+    @vite([
+        'resources/sass/style.sass',
+        'resources/js/app.js'
+                ])
 </head>
 
 <body>
@@ -33,7 +36,7 @@
     @include('client.layout.header')
 
     {{-- Main --}}
-    <main>
+    <main id="app">
         @yield('content')
     </main>
 
