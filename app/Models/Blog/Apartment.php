@@ -107,6 +107,32 @@ class Apartment extends Model implements HasMedia
         return $query->where('category_id', Category::ID_RENT);
     } //scopeSale
 
+    public function scopePrice($query, int $category_id, int $from, int $to)
+    {
+        $field = $category_id == Category::ID_SALE ? 'price_sale' : 'price_rent';
+
+        $query = $query->where('category_id', $category_id);
+
+        return $to > 0
+            ? $query->whereBetween($field, [$from, $to])
+            : $query->where($field, '>', $from);
+    } //scopePrice
+
+    public function scopeSqm($query, int $from, int $to)
+    {
+        return $to > 0
+            ? $query->whereBetween('price_m2', [$from, $to])
+            : $query->where('price_m2', '>', $from);
+    } //scopeSqm
+
+    public function scopeRooms($query, int|string $rooms)
+    {
+        if($rooms === '4+')
+            return $query->where('rooms', '>', '4');
+        
+        return $query->where('rooms', $rooms);
+    } //scopeRooms
+
     /**
      *      Преобразования изображений
      */

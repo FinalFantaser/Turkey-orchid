@@ -24,7 +24,18 @@ class ApartmentSearchRequest extends FormRequest
     public function rules()
     {
         return [
-            
+            'price_from' => 'required|integer|gte:0',
+            'price_to' => 'required|integer|gte:0',
+            'm2_from' => 'required|integer|gte:0',
+            'm2_to' => 'required|integer|gte:0',
+            'date' => 'required|string',
+            // 'rooms' => 'required|integer|gte:1',
         ];
-    }
+    } //rules
+
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        $response = new \Illuminate\Http\Response(['error' => $validator->errors()->first()], 422);
+        throw new \Illuminate\Validation\ValidationException($validator, $response);
+    } //failedValidation
 }
