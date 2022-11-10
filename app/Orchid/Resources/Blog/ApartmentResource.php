@@ -180,6 +180,7 @@ class ApartmentResource extends Resource
 
             Group::make([
                 Input::make('rooms')
+                    ->type('number')
                     ->title('Всего комнат'),
 
                 Input::make('bedrooms')

@@ -20,7 +20,7 @@ class SaleWithFilters extends Query{
         $this->price_to = $request->price_to;
         $this->m2_from = $request->m2_from;
         $this->m2_to = $request->m2_to;
-        $this->date = Carbon::parse($request->date)->startOfDay();
+        $this->date = $request->filled('date') ? Carbon::parse($request->date)->startOfDay() : null;
         $this->rooms = $request->rooms;
 
         $this->_loadRepositories(ApartmentReadRepository::class);
@@ -39,7 +39,9 @@ class SaleWithFilters extends Query{
             ->price(category_id: static::CATEGORY, from: $this->price_from, to: $this->price_to)
             ->sqm($this->m2_from, $this->m2_to)
             // ->rooms($this->rooms)
-            ->whereDate('created_at', '>=', $this->date)
+            ->when(!is_null($this->date), function($query){
+                return $query->whereDate('created_at', '>=', $this->date);
+            })
             ->paginate(static::PER_PAGE);
 
         return $query;
