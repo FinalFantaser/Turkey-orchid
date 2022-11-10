@@ -37,7 +37,8 @@
         gap: 30px
         padding: 45px
         border-radius: 28px
-        &--active
+        transition: 0.3s
+        &:hover
             background: #FFFFFF
             box-shadow: 0px 0px 56.129px rgba(0, 0, 0, 0.15)
         &__wrap
@@ -133,7 +134,7 @@
                         top: 1px
                         bottom: 1px
                         background: linear-gradient(83.57deg, #AA8A5D 5.68%, #EFC484 37.6%, #C9A36F 68%, #AB8B5D 94.48%)
-                        display: none 
+                        display: none
                 &__text
                     font-weight: 300
                     font-size: 14px
@@ -144,7 +145,7 @@
                     &:checked + .directory__filter__rooms__radio__ok
                         &::after
                             display: block
-                        
+
             &__row
                 display: flex
                 gap: 20px

@@ -2,22 +2,22 @@ export default {
     namespaced: true,
     state: () => {
         return {
-            catalogSale: []
+            catalogRent: []
         }
     },
     getters: {
-      stateCatalogSale(state) {
-          return state.catalogSale
-      }
+        stateCatalogRent(state) {
+            return state.catalogRent
+        }
     },
     actions: {
-        async getCatalogSale({state, commit}) {
+        async getCatalogRent({state, commit}) {
             commit('loader/LOADER_TRUE', null, { root: true })
 
-            await axios.get('api/v1/apartments/sale', {
-                })
+            await axios.get('api/v1/apartments/rent', {
+            })
                 .then(function (response) {
-                    state.catalogSale = response.data.data
+                    state.catalogRent = response.data.data
                     console.log(response)
                     commit('loader/LOADER_FALSE', null, { root: true })
                 })
