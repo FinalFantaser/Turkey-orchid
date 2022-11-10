@@ -38,7 +38,7 @@ class SaleWithFilters extends Query{
         $query = $this->apartmentReadRepository->query()
             ->price(category_id: static::CATEGORY, from: $this->price_from, to: $this->price_to)
             ->sqm($this->m2_from, $this->m2_to)
-            // ->rooms($this->rooms)
+            ->rooms($this->rooms)
             ->when(!is_null($this->date), function($query){
                 return $query->whereDate('created_at', '>=', $this->date);
             })
