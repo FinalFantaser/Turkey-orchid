@@ -28,8 +28,8 @@ class ApartmentSearchRequest extends FormRequest
             'price_to' => 'required|integer|gte:0',
             'm2_from' => 'required|integer|gte:0',
             'm2_to' => 'required|integer|gte:0',
-            'date' => 'required|string',
-            // 'rooms' => 'required|integer|gte:1',
+            'date' => 'nullable|string',
+            'rooms' => 'required|string',
         ];
     } //rules
 

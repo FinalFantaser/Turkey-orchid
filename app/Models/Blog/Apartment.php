@@ -125,10 +125,10 @@ class Apartment extends Model implements HasMedia
             : $query->where('price_m2', '>', $from);
     } //scopeSqm
 
-    public function scopeRooms($query, int|string $rooms)
+    public function scopeRooms($query, string $rooms)
     {
         if($rooms === '4+')
-            return $query->where('rooms', '>', '4');
+            return $query->where('rooms', '>', 4);
         
         return $query->where('rooms', $rooms);
     } //scopeRooms
