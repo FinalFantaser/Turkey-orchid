@@ -19,6 +19,10 @@ class ApartmentFullResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'category' => [
+                'id' => $this->category->id,
+                'title' => $this->category->title,
+            ],
             'description' => $this->description,
             'address' => $this->address,
             'located_at' => $this->located_at,

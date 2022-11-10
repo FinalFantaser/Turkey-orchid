@@ -148,11 +148,11 @@ class Apartment extends Model implements HasMedia
 
         //Миниатюра для слайдера
         $this->addMediaConversion('thumb_slider')
-            ->fit(Manipulations::FIT_MAX, 197, 151);
+            ->fit(Manipulations::FIT_MAX, 200, 150);
 
         //Миниатюра для каталога
         $this->addMediaConversion('thumb_catalog')
-            ->fit(Manipulations::FIT_MAX, 277, 300);
+            ->crop(Manipulations::CROP_CENTER, 277, 300);
 
     } //registerMediaConversions
 
