@@ -23,10 +23,23 @@
                             </div>
                             <div class="directory__filter__wrap">
                                 <div class="input-group directory__filter__input-group">
-                                    <input placeholder="От" type="text" class="directory__filter__input directory__filter__input--left">
+                                    <input
+                                        v-model="priceFrom"
+                                        :class="{ 'input--invalid' : v$.$dirty && v$.priceFrom.$invalid }"
+                                        placeholder="От"
+                                        type="text"
+                                        class="directory__filter__input directory__filter__input--left">
+
+                                    <p v-if="v$.$dirty && v$.priceFrom.$invalid" class="invalid">Введите число</p>
                                 </div>
                                 <div class="input-group directory__filter__input-group">
-                                    <input placeholder="До" type="text" class="directory__filter__input directory__filter__input--left directory__filter__input--center">
+                                    <input
+                                        v-model="priceTo"
+                                        :class="{ 'input--invalid' : v$.$dirty && v$.priceTo.$invalid }"
+                                        placeholder="До"
+                                        type="text"
+                                        class="directory__filter__input directory__filter__input--left directory__filter__input--center">
+                                    <p v-if="v$.$dirty && v$.priceTo.$invalid" class="invalid">Введите число</p>
                                 </div>
                             </div>
                         </div>
@@ -38,10 +51,22 @@
                             </div>
                             <div class="directory__filter__wrap">
                                 <div class="input-group directory__filter__input-group">
-                                    <input placeholder="От" type="text" class="directory__filter__input directory__filter__input--left">
+                                    <input
+                                        v-model="m2From"
+                                        :class="{ 'input--invalid' : v$.$dirty && v$.m2From.$invalid }"
+                                        placeholder="От"
+                                        type="text"
+                                        class="directory__filter__input directory__filter__input--left">
+                                    <p v-if="v$.$dirty && v$.m2From.$invalid" class="invalid">Введите число</p>
                                 </div>
                                 <div class="input-group directory__filter__input-group">
-                                    <input placeholder="До" type="text" class="directory__filter__input">
+                                    <input
+                                        v-model="m2To"
+                                        :class="{ 'input--invalid' : v$.$dirty && v$.m2To.$invalid }"
+                                        placeholder="До"
+                                        type="text"
+                                        class="directory__filter__input">
+                                    <p v-if="v$.$dirty && v$.m2To.$invalid" class="invalid">Введите число</p>
                                 </div>
                             </div>
                         </div>
@@ -50,7 +75,11 @@
 
                     <div class="directory__filter__row">
                         <div for="date" class="input-group directory__filter__input-group directory__filter__input-group--date">
-                            <input type="date" id="date" class="directory__filter__input directory__filter__input--date">
+                            <input
+                                v-model="date"
+                                type="date"
+                                id="date"
+                                class="directory__filter__input directory__filter__input--date">
                         </div>
 
                         <div class="directory__filter__rooms">
@@ -61,25 +90,37 @@
                             <div class="directory__filter__rooms__row">
 
                                 <label class="directory__filter__rooms__radio">
-                                    <input checked type="radio" name="rooms" class="directory__filter__rooms__radio__input">
+                                    <input
+                                        v-model="rooms"
+                                        value="1"
+                                        type="radio" name="rooms" class="directory__filter__rooms__radio__input">
                                     <div class="directory__filter__rooms__radio__ok"></div>
                                     <span class="directory__filter__rooms__radio__text">1</span>
                                 </label>
 
                                 <label class="directory__filter__rooms__radio">
-                                    <input type="radio" name="rooms" class="directory__filter__rooms__radio__input">
+                                    <input
+                                        v-model="rooms"
+                                        value="2"
+                                        type="radio" name="rooms" class="directory__filter__rooms__radio__input">
                                     <div class="directory__filter__rooms__radio__ok"></div>
                                     <span class="directory__filter__rooms__radio__text">2</span>
                                 </label>
 
                                 <label class="directory__filter__rooms__radio">
-                                    <input type="radio" name="rooms" class="directory__filter__rooms__radio__input">
+                                    <input
+                                        v-model="rooms"
+                                        value="3"
+                                        type="radio" name="rooms" class="directory__filter__rooms__radio__input">
                                     <div class="directory__filter__rooms__radio__ok"></div>
                                     <span class="directory__filter__rooms__radio__text">3</span>
                                 </label>
 
                                 <label class="directory__filter__rooms__radio">
-                                    <input type="radio" name="rooms" class="directory__filter__rooms__radio__input">
+                                    <input
+                                        v-model="rooms"
+                                        value="4+"
+                                        type="radio" name="rooms" class="directory__filter__rooms__radio__input">
                                     <div class="directory__filter__rooms__radio__ok"></div>
                                     <span class="directory__filter__rooms__radio__text">4+</span>
                                 </label>
@@ -87,7 +128,7 @@
                             </div>
                         </div>
 
-                        <button class="directory__filter__button">Найти</button>
+                        <button @click.prevent="getCatalogFilter" class="directory__filter__button">Найти</button>
 
                     </div>
                 </div>
@@ -137,12 +178,23 @@
 
 <script>
 import {slider} from "../../../assets/slider";
+import { useVuelidate } from '@vuelidate/core'
+import { required, numeric } from '@vuelidate/validators'
 
 export default {
+    setup () {
+        return { v$: useVuelidate() }
+    },
     name: "CatalogList",
     data() {
         return {
-            sale: true
+            sale: true,
+            priceFrom: '',
+            priceTo: '',
+            m2From: '',
+            m2To: '',
+            date: '',
+            rooms: '1'
         }
     },
     computed: {
@@ -160,6 +212,37 @@ export default {
         }
     },
     methods: {
+        clearData() {
+            this.priceFrom = ''
+            this.priceTo = ''
+            this.m2From = ''
+            this.m2To = ''
+            this.date = ''
+            this.rooms = '1'
+        },
+        async getCatalogFilter() {
+            const result = await this.v$.$validate()
+            if (!result) {
+                this.v$.$touch()
+                return
+            }
+            const obj = {
+                price_from: this.priceFrom ? this.priceFrom : 0,
+                price_to: this.priceTo ? this.priceTo : 0,
+                m2_from: this.m2From ? this.m2From : 0,
+                m2_to: this.m2To ? this.m2To : 0,
+                date: this.date ? this.date : null,
+                rooms: this.rooms
+            }
+            if(this.sale) {
+                await this.$store.dispatch('catalogSaleFilter/getCatalogSaleFilter', {
+                    label: false,
+                    filter: obj
+                })
+            } else {
+                await this.$store.dispatch('catalogRentFilter/getCatalogRentFilter', obj)
+            }
+        },
         async modalDetTrue(id) {
             await this.$store.dispatch('showApartment/showApartment', id)
             this.$store.dispatch('modal/modalDetTrue')
@@ -209,6 +292,14 @@ export default {
             this.sale = false
         }
     },
+    validations () {
+        return {
+            priceFrom: { numeric },
+            priceTo: { numeric },
+            m2From: { numeric },
+            m2To: { numeric }
+        }
+    },
     async mounted() {
         await this.getCatalogSale()
     }
@@ -216,5 +307,14 @@ export default {
 </script>
 
 <style scoped>
-
+.invalid {
+    position: absolute;
+    color: tomato;
+    left: 2px;
+    top: 0;
+    font-size: 14px;
+}
+.input--invalid {
+    border-color: tomato;
+}
 </style>
