@@ -1,4 +1,4 @@
-<template>
+33<template>
     <div v-for="card in stateCatalogSale" class="catalog__card">
         <div class="catalog__card__top">
             <div class="catalog__card__img">
@@ -12,7 +12,7 @@
 
         <div class="catalog__card__bottom">
             <p class="catalog__card__price">{{sumMask(+card.price)}} ₺</p>
-            <div data-modalDet class="catalog__card__details">
+            <div @click="modalDetTrue(card.id)" data-modalDet class="catalog__card__details">
                 <span>Подробнее</span>&nbsp;
                 <img src="img/catalog/arrowDetail.png" alt="details">
             </div>
@@ -22,8 +22,6 @@
 
 <script>
 import {slider} from "../../../assets/slider";
-import {modal} from "../../../assets/modal";
-
 
 export default {
     name: "Catalog",
@@ -37,10 +35,27 @@ export default {
         }
     },
     methods: {
-      sumMask(sum) {
+        async modalDetTrue(id) {
+            await this.$store.dispatch('showApartment/showApartment', id)
+            this.$store.dispatch('modal/modalDetTrue')
+            slider(
+                '.modal-det__slider__window',
+                '.modal-det__slider__row',
+                '.modal-det__slider__card',
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                true
+            );
+        },
+        sumMask(sum) {
           const n = sum.toString();
           return  n.replace(/(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g, "$1" + ' ')
-      }
+        }
     },
     async mounted() {
         await this.$store.dispatch('catalogSale/getCatalogSale')
@@ -56,7 +71,6 @@ export default {
             false,
             false
         );
-        modal('.modal-det', 'modal--active', '[data-modalDet]', '.modal-det__close');
     }
 }
 </script>
