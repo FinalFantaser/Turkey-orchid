@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Query\Blog\Apartment\Sale as FindForSaleQuery;
 use App\Query\Blog\Apartment\Rent as FindForRentQuery;
 use App\Query\Blog\Apartment\ById as FindByIdQuery;
+use App\Query\Blog\Apartment\RentWithFilters;
 use App\Query\Blog\Apartment\SaleWithFilters;
 
 class ApartmentController extends Controller
@@ -38,7 +39,9 @@ class ApartmentController extends Controller
 
     public function rentFiltered(ApartmentSearchRequest $request) //Загрузка квартир для аренды с фильтрацией
     {
-        
+        return $this->service->query(
+            new RentWithFilters($request)
+        );
     } //rentFiltered
 
     public function show(int $apartment) //Загрузка полной информации по квартире
