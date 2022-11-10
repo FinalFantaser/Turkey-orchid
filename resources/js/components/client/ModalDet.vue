@@ -74,7 +74,7 @@
                                 <div class="modal-det__charact__item">
                                     <div class="modal-det__charact__item__header">
                                         <img src="img/modal/modal-det/icons/icon3.png" alt="address">
-                                        <span>Цена продажи</span>
+                                        <span>Цена {{ stateData && stateData.category.id === 1 ? 'продажи' : 'аренды' }}</span>
                                     </div>
 
                                     <p class="modal-det__charact__item__text">{{ stateData ? sumMask(stateData.price) : '' }} ₺</p>

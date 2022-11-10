@@ -2,22 +2,29 @@ export default {
     namespaced: true,
     state: () => {
         return {
-            catalogSale: []
+            catalogSale: [],
+            metaSale: null
         }
     },
     getters: {
-      stateCatalogSale(state) {
-          return state.catalogSale
-      }
+        stateMetaSale(state) {
+            return state.metaSale
+        },
+        stateCatalogSale(state) {
+            return state.catalogSale
+        }
     },
     actions: {
-        async getCatalogSale({state, commit}) {
+        async getCatalogSale({state, commit}, label) {
             commit('loader/LOADER_TRUE', null, { root: true })
 
-            await axios.get('api/v1/apartments/sale', {
+            const path = 'api/v1/apartments/sale' + (label ? '?page=' + label : '')
+
+            await axios.get(path, {
                 })
                 .then(function (response) {
                     state.catalogSale = response.data.data
+                    state.metaSale = response.data.meta
                     console.log(response)
                     commit('loader/LOADER_FALSE', null, { root: true })
                 })

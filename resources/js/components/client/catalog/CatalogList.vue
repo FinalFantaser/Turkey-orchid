@@ -4,9 +4,11 @@
             <form action="#" class="directory__filter">
                 <div class="directory__filter__tabs">
                     <p
+                        @click="getCatalogSale"
                         :class="{ 'directory__filter__tabs__item--active' : sale }"
                         class="directory__filter__tabs__item">Купить квартиру</p>
                     <p
+                        @click="getCatalogRent"
                         :class="{ 'directory__filter__tabs__item--active' : !sale }"
                         class="directory__filter__tabs__item">Снять квартиру</p>
                 </div>
@@ -117,22 +119,16 @@
 
             </div>
 
-            <div class="directory__pagination">
-                <img class="directory__pagination__arrow directory__pagination__arrow--prev" src="img/directory/arrowPrev.png" alt="arrow">
-                <div class="directory__pagination__item directory__pagination__item--active">
-                    <span>1</span>
+            <div v-if="stateMeta" class="directory__pagination">
+                <div v-for="(link, index) in stateMeta.links"
+                     @click="sale ? getCatalogSale(link.label, link.url, index) : getCatalogRent(link.label, link.url, index)"
+                     :class="{ 'directory__pagination__item--active' : link.active, 'directory__pagination__item--arrow' : index === 0 || index === stateMeta.links.length - 1 }"
+                     class="directory__pagination__item"
+                >
+                    <img v-if="index === 0" class="directory__pagination__arrow directory__pagination__arrow--prev" src="img/directory/arrowPrev.png" alt="arrow">
+                    <span v-if="index !== 0 && index !== stateMeta.links.length - 1">{{ link.label }}</span>
+                    <img v-if="index === stateMeta.links.length - 1" class="directory__pagination__arrow directory__pagination__arrow--next" src="img/directory/arrowNext.png" alt="arrow">
                 </div>
-                <div class="directory__pagination__item">
-                    <span>3</span>
-                </div>
-                <div class="directory__pagination__item">
-                    <span>4</span>
-                </div>
-
-                <div class="directory__pagination__item directory__pagination__item--dots">
-                    <span>...</span>
-                </div>
-                <img class="directory__pagination__arrow directory__pagination__arrow--next" src="img/directory/arrowNext.png" alt="arrow">
             </div>
 
         </div>
@@ -150,6 +146,12 @@ export default {
         }
     },
     computed: {
+        stateMeta() {
+            if (this.sale) {
+                return this.$store.getters['catalogSale/stateMetaSale']
+            }
+            return this.$store.getters['catalogRent/stateMetaRent']
+        },
         stateCatalog() {
             if (this.sale) {
                 return this.$store.getters['catalogSale/stateCatalogSale']
@@ -179,16 +181,28 @@ export default {
             const n = sum.toString();
             return  n.replace(/(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g, "$1" + ' ')
         },
-        async getCatalogSale() {
-            await this.$store.dispatch('catalogSale/getCatalogSale')
+        async getCatalogSale(label, url = true, index) {
+            if (!url) {
+                return
+            }
+            if (this.stateMeta && (index === 0 || index === this.stateMeta.links.length - 1)) {
+                label = url.slice(-1)
+            }
+            await this.$store.dispatch('catalogSale/getCatalogSale', label)
             if (this.$store.getters['catalogSale/stateCatalogSale'].length === 0) {
                 return
             }
             this.sale = true
 
         },
-        async getCatalogRent() {
-            await this.$store.dispatch('catalogRent/getCatalogRent')
+        async getCatalogRent(label, url = true, index) {
+            if (!url) {
+                return
+            }
+            if (this.stateMeta && (index === 0 || index === this.stateMeta.links.length - 1)) {
+                label = url.slice(-1)
+            }
+            await this.$store.dispatch('catalogRent/getCatalogRent', label)
             if (this.$store.getters['catalogRent/stateCatalogRent'].length === 0) {
                 return
             }
