@@ -331,14 +331,5 @@ export default {
 </script>
 
 <style scoped>
-.invalid {
-    position: absolute;
-    color: tomato;
-    left: 2px;
-    top: 0;
-    font-size: 14px;
-}
-.input--invalid {
-    border-color: tomato;
-}
+
 </style>

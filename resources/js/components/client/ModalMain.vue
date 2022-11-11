@@ -1,9 +1,9 @@
 <template>
     <div class="modal modal-main">
         <div class="modal__container">
-            <form action="#" class="modal-main__dialog">
+            <form @submit.prevent="postData" action="#" class="modal-main__dialog">
 
-                <picture class="modal-main__close">
+                <picture ref="modalClose" class="modal-main__close">
                     <source media="(max-width: 991px)" srcset="img/close.png">
                     <img src="img/modal/closeWhite.png" alt="close">
                 </picture>
@@ -15,7 +15,13 @@
                         <div class="input-group modal-main__input-group">
                             <label class="modal-main__label label" for="modalName">Ваше имя*</label>
                             <div class="modal-main__input-wrap input-wrap">
-                                <input placeholder="Имя" id="modalName" type="text" class="input-r moda-main__input">
+                                <input
+                                    v-model="name"
+                                    placeholder="Имя"
+                                    id="modalName"
+                                    type="text"
+                                    class="input-r moda-main__input"
+                                >
                                 <svg class="input-wrap__svg" fill="none">
                                     <path d="M 15,0
                                             Q 5,0 5,10
@@ -31,14 +37,21 @@
                                     />
                                     <line x1="15" y1="0" x2="calc(100% - 15px)" y2="0" />
                                 </svg>
-
+                                <p v-if="v$.$dirty && v$.name.required.$invalid" class="invalid">Обязательное поле</p>
                             </div>
                         </div>
 
                         <div class="input-group modal-main__input-group">
                             <label class="modal-main__label label" for="modalTel">Ваше телефон*</label>
                             <div class="modal-main__input-wrap input-wrap">
-                                <input placeholder="+_ (___) ___ - __-__" id="modalTel" type="tel" class="input-r moda-main__input">
+                                <input
+                                    v-model="phone"
+                                    v-maska="'+# (###) ###-##-##'"
+                                    placeholder="+_ (___) ___ - __-__"
+                                    id="modalTel"
+                                    type="tel"
+                                    class="input-r modal-main__input"
+                                >
                                 <svg class="input-wrap__svg" fill="none">
                                     <path d="M 15,0
                                             Q 5,0 5,10
@@ -54,12 +67,13 @@
                                     />
                                     <line x1="15" y1="0" x2="calc(100% - 15px)" y2="0" />
                                 </svg>
-
+                                <p v-if="v$.$dirty && v$.phone.required.$invalid" class="invalid">Обязательное поле</p>
+                                <p v-else-if="v$.$dirty && v$.phone.minLength.$invalid" class="invalid">Не верный формат</p>
                             </div>
                         </div>
                     </div>
 
-                    <button class="button-r modal-main__button">
+                    <button type="submit" class="button-r modal-main__button">
                         <span>Подробнее</span>
                         <div class="button-r__wrap">
                             <svg>
@@ -103,8 +117,71 @@
 </template>
 
 <script>
+import { useVuelidate } from '@vuelidate/core'
+import { required, minLength } from '@vuelidate/validators'
+import post from "../../store/cervices/postData";
+import { useToast } from "vue-toastification";
+
 export default {
-    name: "ModalMain"
+    name: "ModalMain",
+    setup () {
+        return {
+            v$: useVuelidate(),
+            toast: useToast()
+        }
+    },
+    data() {
+        return {
+            name: '',
+            phone: ''
+        }
+    },
+    methods: {
+        clearData() {
+            this.name = ''
+            this.phone = ''
+        },
+        async postData() {
+
+            const result = await this.v$.$validate()
+            if (!result) {
+                this.v$.$touch()
+                return
+            }
+
+            this.$store.commit('loader/LOADER_TRUE')
+
+            const obj = {
+                name: this.name,
+                phone: this.phone.replace(/\D/g, '')
+            }
+            await post.postData(obj)
+                .then(response => {
+                    console.log(response)
+                    this.clearData()
+                    this.v$.$reset()
+                    this.$refs.modalClose.click()
+                    this.$store.commit('loader/LOADER_FALSE')
+                    this.toast.success("Заявка отправлена", {
+                        timeout: 3000
+                    });
+                })
+                .catch(error => {
+                    console.log(error)
+                    this.$store.commit('loader/LOADER_FALSE')
+                    this.toast.error("Ошибка. Попробуйте ещё раз.", {
+                        timeout: 3000
+                    });
+                })
+
+        }
+    },
+    validations () {
+        return {
+            name: { required },
+            phone: { required, minLength: minLength(18) }
+        }
+    }
 }
 </script>
 
