@@ -74,7 +74,7 @@
                     </div>
 
                     <button type="submit" class="button-r modal-main__button">
-                        <span>Подробнее</span>
+                        <span>Заказать звонок</span>
                         <div class="button-r__wrap">
                             <svg>
                                 <clipPath id="svgPathModal">

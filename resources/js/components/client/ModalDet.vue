@@ -164,7 +164,7 @@
                         </div>
                     </div>
 
-                    <button class="button-r modal-det__button">
+                    <button data-modal class="button-r modal-det__button">
                         <span>Подробнее</span>
                         <div class="button-r__wrap">
                             <svg>
