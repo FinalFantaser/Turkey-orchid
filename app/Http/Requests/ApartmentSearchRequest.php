@@ -25,11 +25,11 @@ class ApartmentSearchRequest extends FormRequest
     {
         return [
             'price_from' => 'required|integer|gte:0',
-            'price_to' => 'required|integer|gte:0',
+            'price_to' => 'required|numeric|gte:0',
             'm2_from' => 'required|integer|gte:0',
             'm2_to' => 'required|integer|gte:0',
             'date' => 'nullable|string',
-            'rooms' => 'required|string',
+            'rooms' => 'required|array',
         ];
     } //rules
 

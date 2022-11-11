@@ -4,10 +4,6 @@ composer install
 ```
 
 ```sh
-php artisan key:generate
-```
-
-```sh
 php artisan storage:link
 ```
 
@@ -32,4 +28,8 @@ php artisan orchid:install
 
 ```sh
 php artisan orchid:admin <имя> <e-mail> <пароль>
+```
+
+```sh
+php artisan key:generate
 ```
