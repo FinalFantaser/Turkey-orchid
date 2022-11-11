@@ -250,6 +250,7 @@ export default {
                 date: this.date ? this.date : null,
                 rooms: this.rooms
             }
+            console.log(obj)
             if(this.sale) {
                 await this.$store.dispatch('catalogSaleFilter/getCatalogSaleFilter', {
                     label: false,
