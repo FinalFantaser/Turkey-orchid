@@ -43,7 +43,7 @@
                 </button>
             </div>
 
-            <div data-video="video/Turkey.mp4" class="main__play">
+            <div data-video="/video/Turkey.mp4" class="main__play">
                 <picture class="main__play__button">
                     <source media="(max-width: 991px)" srcset="{{asset('img/main/playM.png')}}">
                     <img src="{{asset('img/main/play.png')}}" alt="play">

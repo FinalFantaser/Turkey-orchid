@@ -7,12 +7,14 @@ import IndexCatalogApp from './components/client/index/Catalog.vue'
     // catalog
 import CatalogListApp from './components/client/catalog/CatalogList.vue'
     // other
+import ModalMainApp from './components/client/ModalMain.vue'
 import ModalDetApp from './components/client/ModalDet.vue'
 import LoaderApp from './components/client/Loader.vue'
 
 const app = createApp({components: {
         IndexCatalogApp,
         CatalogListApp,
+        ModalMainApp,
         ModalDetApp,
         LoaderApp
 }})

@@ -28,7 +28,6 @@ function modal(modal, modalActiveClass, triggers, modalClose) {
             }
         });
     }
-    console.log(triggers_)
 }
 
 export {modal}

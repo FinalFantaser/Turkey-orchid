@@ -93,7 +93,7 @@
                                     <input
                                         v-model="rooms"
                                         value="1"
-                                        type="radio" name="rooms" class="directory__filter__rooms__radio__input">
+                                        type="checkbox" name="rooms" class="directory__filter__rooms__radio__input">
                                     <div class="directory__filter__rooms__radio__ok"></div>
                                     <span class="directory__filter__rooms__radio__text">1</span>
                                 </label>
@@ -102,7 +102,7 @@
                                     <input
                                         v-model="rooms"
                                         value="2"
-                                        type="radio" name="rooms" class="directory__filter__rooms__radio__input">
+                                        type="checkbox" name="rooms" class="directory__filter__rooms__radio__input">
                                     <div class="directory__filter__rooms__radio__ok"></div>
                                     <span class="directory__filter__rooms__radio__text">2</span>
                                 </label>
@@ -111,7 +111,7 @@
                                     <input
                                         v-model="rooms"
                                         value="3"
-                                        type="radio" name="rooms" class="directory__filter__rooms__radio__input">
+                                        type="checkbox" name="rooms" class="directory__filter__rooms__radio__input">
                                     <div class="directory__filter__rooms__radio__ok"></div>
                                     <span class="directory__filter__rooms__radio__text">3</span>
                                 </label>
@@ -119,8 +119,8 @@
                                 <label class="directory__filter__rooms__radio">
                                     <input
                                         v-model="rooms"
-                                        value="4+"
-                                        type="radio" name="rooms" class="directory__filter__rooms__radio__input">
+                                        value="more"
+                                        type="checkbox" name="rooms" class="directory__filter__rooms__radio__input">
                                     <div class="directory__filter__rooms__radio__ok"></div>
                                     <span class="directory__filter__rooms__radio__text">4+</span>
                                 </label>
@@ -188,27 +188,42 @@ export default {
     name: "CatalogList",
     data() {
         return {
+            filter: false,
             sale: true,
             priceFrom: '',
             priceTo: '',
             m2From: '',
             m2To: '',
             date: '',
-            rooms: '1'
+            rooms: []
         }
     },
     computed: {
         stateMeta() {
-            if (this.sale) {
-                return this.$store.getters['catalogSale/stateMetaSale']
+            if(this.filter) {
+                if (this.sale) {
+                    return this.$store.getters['catalogSaleFilter/stateMetaSaleFilter']
+                }
+                return this.$store.getters['catalogRentFilter/stateMetaRentFilter']
+            } else {
+                if (this.sale) {
+                    return this.$store.getters['catalogSale/stateMetaSale']
+                }
+                return this.$store.getters['catalogRent/stateMetaRent']
             }
-            return this.$store.getters['catalogRent/stateMetaRent']
         },
         stateCatalog() {
-            if (this.sale) {
-                return this.$store.getters['catalogSale/stateCatalogSale']
+            if(this.filter) {
+                if (this.sale) {
+                    return this.$store.getters['catalogSaleFilter/stateCatalogSaleFilter']
+                }
+                return this.$store.getters['catalogRentFilter/stateCatalogRentFilter']
+            } else {
+                if (this.sale) {
+                    return this.$store.getters['catalogSale/stateCatalogSale']
+                }
+                return this.$store.getters['catalogRent/stateCatalogRent']
             }
-            return this.$store.getters['catalogRent/stateCatalogRent']
         }
     },
     methods: {
@@ -218,9 +233,10 @@ export default {
             this.m2From = ''
             this.m2To = ''
             this.date = ''
-            this.rooms = '1'
+            this.rooms = []
         },
         async getCatalogFilter() {
+            this.filter = true
             const result = await this.v$.$validate()
             if (!result) {
                 this.v$.$touch()
@@ -240,7 +256,10 @@ export default {
                     filter: obj
                 })
             } else {
-                await this.$store.dispatch('catalogRentFilter/getCatalogRentFilter', obj)
+                await this.$store.dispatch('catalogRentFilter/getCatalogRentFilter', {
+                    label: false,
+                    filter: obj
+                })
             }
         },
         async modalDetTrue(id) {
@@ -271,6 +290,8 @@ export default {
             if (this.stateMeta && (index === 0 || index === this.stateMeta.links.length - 1)) {
                 label = url.slice(-1)
             }
+            this.filter = false
+            this.clearData()
             await this.$store.dispatch('catalogSale/getCatalogSale', label)
             if (this.$store.getters['catalogSale/stateCatalogSale'].length === 0) {
                 return
@@ -285,6 +306,8 @@ export default {
             if (this.stateMeta && (index === 0 || index === this.stateMeta.links.length - 1)) {
                 label = url.slice(-1)
             }
+            this.filter = false
+            this.clearData()
             await this.$store.dispatch('catalogRent/getCatalogRent', label)
             if (this.$store.getters['catalogRent/stateCatalogRent'].length === 0) {
                 return

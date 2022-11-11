@@ -15,13 +15,12 @@ export default {
         }
     },
     actions: {
-        async getCatalogRentFilter({state, commit}, label) {
+        async getCatalogRentFilter({state, commit}, obj) {
             commit('loader/LOADER_TRUE', null, { root: true })
 
-            const path = 'api/v1/apartments/filtered/rent' + (label ? '?page=' + label : '')
+            const path = 'api/v1/apartments/filtered/rent' + (obj.label ? '?page=' + obj.label : '')
 
-            await axios.get(path, {
-            })
+            await axios.get(path, {params: obj.filter})
                 .then(function (response) {
                     state.catalogRentFilter = response.data.data
                     state.metaRentFilter = response.data.meta
