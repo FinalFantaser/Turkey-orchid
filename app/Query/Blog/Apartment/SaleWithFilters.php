@@ -4,16 +4,15 @@ namespace App\Query\Blog\Apartment;
 
 use App\Http\Requests\ApartmentSearchRequest;
 use App\Http\Resources\Blog\Apartment\ApartmentBriefResource;
-use App\Models\Blog\Category;
 use App\Query\Query;
 use App\Repositories\Blog\ApartmentReadRepository;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Arr;
 
 class SaleWithFilters extends Query{
     protected const PER_PAGE = 8;
-    protected const CATEGORY = Category::ID_SALE;
-
+    
     public function __construct(ApartmentSearchRequest $request)
     {
         $this->price_from = $request->price_from;
@@ -21,13 +20,13 @@ class SaleWithFilters extends Query{
         $this->m2_from = $request->m2_from;
         $this->m2_to = $request->m2_to;
         $this->date = $request->filled('date') ? Carbon::parse($request->date)->startOfDay() : null;
-        $this->rooms = $request->rooms;
+        $this->rooms = Arr::whereNotNull($request->rooms);
 
         $this->_loadRepositories(ApartmentReadRepository::class);
     } //__construct
 
     public function __invoke()
-    {
+    {   
         return ApartmentBriefResource::collection(
             $this->_buildQuery()
         );
@@ -35,8 +34,8 @@ class SaleWithFilters extends Query{
 
     protected function _buildQuery(): LengthAwarePaginator
     {
-        $query = $this->apartmentReadRepository->query()
-            ->price(category_id: static::CATEGORY, from: $this->price_from, to: $this->price_to)
+        $query = $this->_getCategory()
+            ->price($this->price_from, $this->price_to)
             ->sqm($this->m2_from, $this->m2_to)
             ->rooms($this->rooms)
             ->when(!is_null($this->date), function($query){
@@ -46,6 +45,11 @@ class SaleWithFilters extends Query{
 
         return $query;
     } //_buildQuery
+
+    protected function _getCategory() //Метод для удобства наследования
+    {
+        return $this->apartmentReadRepository->query()->sale();
+    } //_getCategory
 };
 
 ?>

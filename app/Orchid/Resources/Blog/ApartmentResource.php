@@ -161,13 +161,9 @@ class ApartmentResource extends Resource
             ])->fullWidth(),
 
             Group::make([
-                Input::make('price_sale')
+                Input::make('price')
                 ->type('number')
-                ->title('Цена продажи'),
-
-                Input::make('price_rent')
-                    ->type('number')
-                    ->title('Цена аренды'),
+                ->title('Цена'),
 
                 Input::make('price_m2')
                     ->type('number')
@@ -228,8 +224,7 @@ class ApartmentResource extends Resource
             'seo_title' => 'string|max:256',
             'address' => 'string|max:256',
             'located_at' => 'string|max:256',
-            'price_sale' => 'integer|gte:0',
-            'price_rent' => 'integer|gte:0',
+            'price' => 'integer|gte:0',
             'price_m2' => 'integer|gte:0',
             'area' => 'integer|gte:0',
             'rooms' => 'string|max:256',
@@ -263,10 +258,7 @@ class ApartmentResource extends Resource
                 
             TD::make(name: 'title', title: 'Название'),
 
-            TD::make(title: 'Цена')
-                ->render(function($model){
-                    return $model->price;
-                }),
+            TD::make(name: 'price', title: 'Цена'),
 
             TD::make('created_at', 'Дата')
                 ->render(function ($model) {
@@ -294,8 +286,7 @@ class ApartmentResource extends Resource
             Sight::make(name: 'description', title: 'Описание'),
             Sight::make(name: 'address', title: 'Адрес'),
             Sight::make(name: 'located_at', title: 'Расположение'),
-            Sight::make(name: 'price_sale', title: 'Цена продажи'),
-            Sight::make(name: 'price_rent', title: 'Цена аренды'),
+            Sight::make(name: 'price', title: 'Цена'),
             Sight::make(name: 'price_m2', title: 'Цена за м2'),
             Sight::make(name: 'area', title: 'Площадь'),
             Sight::make(name: 'rooms', title: 'Всего комнат'),

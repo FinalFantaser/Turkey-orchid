@@ -26,8 +26,7 @@ class Apartment extends Model implements HasMedia
 
         'address',
         'located_at',
-        'price_sale',
-        'price_rent',
+        'price',
         'price_m2',
         'area',
         'rooms',
@@ -48,11 +47,10 @@ class Apartment extends Model implements HasMedia
         
         'address' => 'string',
         'located_at' => 'string',
-        'price_sale' => 'integer',
-        'price_rent' => 'integer',
+        'price' => 'integer',
         'price_m2' => 'integer',
         'area' => 'integer',
-        'rooms' => 'string',
+        'rooms' => 'integer',
         'bedrooms' => 'integer',
         'bathrooms' => 'integer',
         'floor' => 'integer',
@@ -69,8 +67,7 @@ class Apartment extends Model implements HasMedia
 
         'address' => '',
         'located_at' => '',
-        'price_sale' => 0,
-        'price_rent' => 0,
+        'price' => 0,
         'price_m2' => 0,
         'area' => 0,
         'rooms' => 0,
@@ -86,11 +83,13 @@ class Apartment extends Model implements HasMedia
 
     protected $allowedFilters = [
         'category_id',
+        'price',
         'name',
     ];
 
     protected $allowedSorts = [
         'category_id',
+        'price',
         'created_at'
     ];
 
@@ -107,30 +106,40 @@ class Apartment extends Model implements HasMedia
         return $query->where('category_id', Category::ID_RENT);
     } //scopeSale
 
-    public function scopePrice($query, int $category_id, int $from, int $to)
+    public function scopePrice($query, int $from, int $to)
     {
-        $field = $category_id === Category::ID_SALE ? 'price_sale' : 'price_rent';
-
-        $query = $query->where('category_id', $category_id);
-
         return $to > 0
-            ? $query->whereBetween($field, [$from, $to])
-            : $query->where($field, '>', $from);
+            ? $query->whereBetween('price', [$from, $to])
+            : $query->where('price', '>=', $from);
     } //scopePrice
 
     public function scopeSqm($query, int $from, int $to)
     {
         return $to > 0
             ? $query->whereBetween('price_m2', [$from, $to])
-            : $query->where('price_m2', '>', $from);
+            : $query->where('price_m2', '>=', $from);
     } //scopeSqm
 
-    public function scopeRooms($query, string $rooms)
+    public function scopeRooms($query, array $rooms)
     {
-        if($rooms === '4+')
-            return $query->where('rooms', '>', 4);
-        
-        return $query->where('rooms', $rooms);
+        //Определения наличия команды 4+ в массиве
+        $more = false;
+        if(in_array(needle: 'more', haystack: $rooms)){
+            $more = true;
+            $key = array_search(needle: 'more', haystack: $rooms);
+            unset($rooms[$key]);
+            
+            if(count($rooms) < 1)
+                return $query->where('rooms', '>=', 4);
+        }
+
+        if(count($rooms) < 1)
+            return $query;
+
+        return $query->whereIn('rooms', $rooms)
+            ->when($more, function($query){
+                return $query->orWhere('rooms', '>=', 4);
+            });
     } //scopeRooms
 
     /**
@@ -167,15 +176,6 @@ class Apartment extends Model implements HasMedia
     /**
      *      Геттеры
      */
-    public function getPriceAttribute(): int
-    {
-        if($this->category_id === Category::ID_SALE)
-            return $this->price_sale;
-        elseif($this->category_id === Category::ID_RENT)
-            return $this->price_rent;
-        else
-            return 0;
-    } //getPriceAttribute
 
     public function getImageOriginal(int $index = 0): ?string
     {
@@ -222,13 +222,13 @@ class Apartment extends Model implements HasMedia
             return [];
     } //getSliderThumbs
 
-    public function getSliderThumb(int $index = 0): string
+    public function getSliderThumb(int $index = 0): ?string
     {
-        return $this->getMedia()[$index]->getUrl('thumb_slider');
+        return $this->hasMedia() ? $this->getMedia()[$index]->getUrl('thumb_slider') : null;
     } //getSliderThumb
 
-    public function getCatalogThumb(int $index = 0): string
+    public function getCatalogThumb(int $index = 0): ?string
     {
-        return $this->getMedia()[$index]->getUrl('thumb_catalog');
+        return $this->hasMedia() ?  $this->getMedia()[$index]->getUrl('thumb_catalog') : null;
     } //getCatalogThumb
 }
