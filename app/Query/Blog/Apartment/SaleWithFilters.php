@@ -20,7 +20,7 @@ class SaleWithFilters extends Query{
         $this->m2_from = $request->m2_from;
         $this->m2_to = $request->m2_to;
         $this->date = $request->filled('date') ? Carbon::parse($request->date)->startOfDay() : null;
-        $this->rooms = Arr::whereNotNull($request->rooms);
+        $this->rooms = $request->has('rooms') ? Arr::whereNotNull($request->rooms) : [];
 
         $this->_loadRepositories(ApartmentReadRepository::class);
     } //__construct
