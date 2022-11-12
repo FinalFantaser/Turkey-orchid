@@ -162,7 +162,7 @@
 
             <div v-if="stateMeta" class="directory__pagination">
                 <div v-for="(link, index) in stateMeta.links"
-                     @click="sale ? getCatalogSale(link.label, link.url, index) : getCatalogRent(link.label, link.url, index)"
+                     @click="pagination(link.label, link.url, index)"
                      :class="{ 'directory__pagination__item--active' : link.active, 'directory__pagination__item--arrow' : index === 0 || index === stateMeta.links.length - 1 }"
                      class="directory__pagination__item"
                 >
@@ -227,6 +227,23 @@ export default {
         }
     },
     methods: {
+        async pagination(label, url = true, index) {
+            if (!url) {
+                return
+            }
+            if (this.stateMeta && (index === 0 || index === this.stateMeta.links.length - 1)) {
+                label = url.slice(-1)
+            }
+            if(this.filter) {
+                await this.getCatalogFilter(label)
+            } else {
+                if (this.sale) {
+                    await this.getCatalogSale(label)
+                } else {
+                    await this.getCatalogRent(label)
+                }
+            }
+        },
         clearData() {
             this.priceFrom = ''
             this.priceTo = ''
@@ -235,7 +252,7 @@ export default {
             this.date = ''
             this.rooms = []
         },
-        async getCatalogFilter() {
+        async getCatalogFilter(label) {
             this.filter = true
             const result = await this.v$.$validate()
             if (!result) {
@@ -253,12 +270,12 @@ export default {
             console.log(obj)
             if(this.sale) {
                 await this.$store.dispatch('catalogSaleFilter/getCatalogSaleFilter', {
-                    label: false,
+                    label: label,
                     filter: obj
                 })
             } else {
                 await this.$store.dispatch('catalogRentFilter/getCatalogRentFilter', {
-                    label: false,
+                    label: label,
                     filter: obj
                 })
             }
@@ -284,13 +301,7 @@ export default {
             const n = sum.toString();
             return  n.replace(/(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g, "$1" + ' ')
         },
-        async getCatalogSale(label, url = true, index) {
-            if (!url) {
-                return
-            }
-            if (this.stateMeta && (index === 0 || index === this.stateMeta.links.length - 1)) {
-                label = url.slice(-1)
-            }
+        async getCatalogSale(label) {
             this.filter = false
             this.clearData()
             await this.$store.dispatch('catalogSale/getCatalogSale', label)
@@ -298,15 +309,8 @@ export default {
                 return
             }
             this.sale = true
-
         },
         async getCatalogRent(label, url = true, index) {
-            if (!url) {
-                return
-            }
-            if (this.stateMeta && (index === 0 || index === this.stateMeta.links.length - 1)) {
-                label = url.slice(-1)
-            }
             this.filter = false
             this.clearData()
             await this.$store.dispatch('catalogRent/getCatalogRent', label)
