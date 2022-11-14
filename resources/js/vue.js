@@ -19,6 +19,8 @@ import CatalogListApp from './components/client/catalog/CatalogList.vue'
 import ModalMainApp from './components/client/ModalMain.vue'
 import ModalDetApp from './components/client/ModalDet.vue'
 import LoaderApp from './components/client/Loader.vue'
+import ButtonLinkSaleApp from './components/client/ButtonLinkSale.vue'
+import ButtonLinkRentApp from './components/client/ButtonLinkRent.vue'
 
 const app = createApp({components: {
         IndexCatalogApp,
@@ -26,7 +28,9 @@ const app = createApp({components: {
         CatalogListApp,
         ModalMainApp,
         ModalDetApp,
-        LoaderApp
+        LoaderApp,
+        ButtonLinkSaleApp,
+        ButtonLinkRentApp
 }})
 
 app.use(store)

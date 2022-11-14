@@ -22,31 +22,34 @@
 </head>
 
 <body>
-    <svg style="visibility: hidden; position: fixed;" width="0" height="0">
-        <defs>
-            <linearGradient id="cl1" gradientUnits="objectBoundingBox" x1="0" y1="0.5" x2="1" y2="0.5">
-                <stop stop-color="#AA8A5D"/>
-                <stop offset="20%" stop-color="#EFC484"/>
-                <stop offset="80%" stop-color="#C9A36F"/>
-                <stop offset="100%" stop-color="#AA8A5D"/>
-            </linearGradient>
-        </defs>
-    </svg>
-
-    @include('client.layout.header')
 
     {{-- Main --}}
-    <main id="app">
-        @yield('content')
+    <div id="app">
+        <svg style="visibility: hidden; position: fixed;" width="0" height="0">
+            <defs>
+                <linearGradient id="cl1" gradientUnits="objectBoundingBox" x1="0" y1="0.5" x2="1" y2="0.5">
+                    <stop stop-color="#AA8A5D"/>
+                    <stop offset="20%" stop-color="#EFC484"/>
+                    <stop offset="80%" stop-color="#C9A36F"/>
+                    <stop offset="100%" stop-color="#AA8A5D"/>
+                </linearGradient>
+            </defs>
+        </svg>
+
+        @include('client.layout.header')
+
+        <main>
+            @yield('content')
+        </main>
+
+        @include('client.layout.footer')
+        @include('client.layout.menu')
+        @include('client.layout.modalVideo')
+
         <modal-main-app></modal-main-app>
         <modal-det-app></modal-det-app>
         <loader-app></loader-app>
-    </main>
-
-
-    @include('client.layout.footer')
-    @include('client.layout.menu')
-    @include('client.layout.modalVideo')
+    </div>
 
 
 </body>

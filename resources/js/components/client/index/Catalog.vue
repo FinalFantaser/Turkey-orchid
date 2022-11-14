@@ -20,7 +20,7 @@
             </a>
 
             <div class="catalog__window">
-                <div class="catalog__field">
+                <div ref="field" class="catalog__field">
 
                     <div v-for="card in stateCatalog" class="catalog__card">
                         <div class="catalog__card__top">
@@ -82,6 +82,7 @@ export default {
     },
     methods: {
         async getCatalogRent() {
+            this.$refs.field.style = ''
             await this.$store.dispatch('catalogRent/getCatalogRent')
             if (this.$store.getters['catalogRent/stateCatalogRent'].length === 0) {
                 return
@@ -89,6 +90,7 @@ export default {
             this.sale = false
         },
         async getCatalogSale() {
+            this.$refs.field.style = ''
             await this.$store.dispatch('catalogSale/getCatalogSale')
             if (this.$store.getters['catalogSale/stateCatalogSale'].length === 0) {
                 return

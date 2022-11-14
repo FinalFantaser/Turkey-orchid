@@ -65,13 +65,13 @@
         </div>
 
         <div class="advantages__footer">
-            <a href="#" class="advantages__link">
+            <a href="https://t.me/feniks_yatirim" target="_blank" class="advantages__link">
                 <img src="img/advantages/logo1.png" alt="telegram">
             </a>
             <a href="#" class="advantages__link">
                 <img src="img/advantages/logo2.png" alt="whatsApp">
             </a>
-            <a href="#" class="advantages__link">
+            <a href="https://instagram.com/feniksyatirim?igshid=YmMyMTA2M2Y=" target="_blank" class="advantages__link">
                 <img src="img/advantages/logo3.png" alt="instagram">
             </a>
             <a href="#" class="advantages__link">

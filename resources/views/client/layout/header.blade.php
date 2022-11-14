@@ -11,11 +11,11 @@
             </a>
 
             <nav class="header__nav">
-                <a href="#we" class="header__link">О нас</a>
-                <a href="#catalog" class="header__link">Аренда</a>
-                <a href="#catalog" class="header__link">Продажа</a>
-                <a href="#send" class="header__link">Новости</a>
-                <a href="#footer" class="header__link">Контакты</a>
+                <a href="/#we" class="header__link">О нас</a>
+                <button-link-rent-app href="/#catalog" class="header__link">Аренда</button-link-rent-app>
+                <button-link-sale-app href="/#catalog" class="header__link">Продажа</button-link-sale-app>
+                <a href="/#send" class="header__link">Новости</a>
+                <a href="/#footer" class="header__link">Контакты</a>
             </nav>
 
             <a href="tel:+79991112233" class="button header__button"><img src="{{asset('img/tel.png')}}" alt="tel">Бесплатный звонок</a>
