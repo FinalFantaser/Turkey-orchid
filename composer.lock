@@ -4012,16 +4012,16 @@
         },
         {
             "name": "spatie/laravel-medialibrary",
-            "version": "10.6.1",
+            "version": "10.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-medialibrary.git",
-                "reference": "4d09b2f1f574e18dbca7587e6b89178cafb4ca2f"
+                "reference": "e39fb213dc35efdea233f75590ffc4afafe3e203"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/4d09b2f1f574e18dbca7587e6b89178cafb4ca2f",
-                "reference": "4d09b2f1f574e18dbca7587e6b89178cafb4ca2f",
+                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/e39fb213dc35efdea233f75590ffc4afafe3e203",
+                "reference": "e39fb213dc35efdea233f75590ffc4afafe3e203",
                 "shasum": ""
             },
             "require": {
@@ -4104,7 +4104,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-medialibrary/issues",
-                "source": "https://github.com/spatie/laravel-medialibrary/tree/10.6.1"
+                "source": "https://github.com/spatie/laravel-medialibrary/tree/10.7.0"
             },
             "funding": [
                 {
@@ -4116,7 +4116,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-11-04T23:21:14+00:00"
+            "time": "2022-11-09T11:13:06+00:00"
         },
         {
             "name": "spatie/temporary-directory",
@@ -9374,5 +9374,5 @@
         "php": "^8.0.2"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }

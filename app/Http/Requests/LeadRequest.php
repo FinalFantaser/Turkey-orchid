@@ -25,7 +25,8 @@ class LeadRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:256',
-            'phone' => ['required', 'regex:/^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/'],
+//            'phone' => ['required', 'regex:/^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/'],
+            'phone' => ['required', 'integer'],
         ];
     }
 }

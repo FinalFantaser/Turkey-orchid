@@ -23,6 +23,6 @@ use Illuminate\Support\Facades\Route;
 Route::name('client.')->group(function(){
     // Route::get('/', [ApartmentController::class, 'test'])->name('main');
     Route::get('/', [HomeController::class, 'main'])->name('main');
-
+    Route::get('/catalog', [HomeController::class, 'catalog'])->name('catalog');
     Route::post('lead.add', CreateLeadController::class)->name('lead.add');
 });

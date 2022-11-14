@@ -23,6 +23,12 @@ Route::prefix('v1')->group(function(){
     Route::prefix('apartments')->name('apartments.')->group(function(){
         Route::get('sale', [ApartmentController::class, 'sale'])->name('sale');
         Route::get('rent', [ApartmentController::class, 'rent'])->name('rent');
+
+        Route::prefix('filtered')->name('filtered.')->group(function(){
+            Route::get('sale', [ApartmentController::class, 'saleFiltered'])->name('sale');
+            Route::get('rent', [ApartmentController::class, 'rentFiltered'])->name('rent');
+        });
+
         Route::get('show/{apartment}', [ApartmentController::class, 'show'])->name('show');
     });
 });

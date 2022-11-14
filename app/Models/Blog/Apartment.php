@@ -26,8 +26,7 @@ class Apartment extends Model implements HasMedia
 
         'address',
         'located_at',
-        'price_sale',
-        'price_rent',
+        'price',
         'price_m2',
         'area',
         'rooms',
@@ -48,11 +47,10 @@ class Apartment extends Model implements HasMedia
         
         'address' => 'string',
         'located_at' => 'string',
-        'price_sale' => 'integer',
-        'price_rent' => 'integer',
+        'price' => 'integer',
         'price_m2' => 'integer',
         'area' => 'integer',
-        'rooms' => 'string',
+        'rooms' => 'integer',
         'bedrooms' => 'integer',
         'bathrooms' => 'integer',
         'floor' => 'integer',
@@ -69,8 +67,7 @@ class Apartment extends Model implements HasMedia
 
         'address' => '',
         'located_at' => '',
-        'price_sale' => 0,
-        'price_rent' => 0,
+        'price' => 0,
         'price_m2' => 0,
         'area' => 0,
         'rooms' => 0,
@@ -86,16 +83,67 @@ class Apartment extends Model implements HasMedia
 
     protected $allowedFilters = [
         'category_id',
+        'price',
         'name',
     ];
 
     protected $allowedSorts = [
         'category_id',
+        'price',
         'created_at'
     ];
 
     /**
-     *      Преобразования
+     *      Фильтры поиска
+     */
+    public function scopeSale($query)
+    {
+        return $query->where('category_id', Category::ID_SALE);
+    } //scopeSale
+
+    public function scopeRent($query)
+    {
+        return $query->where('category_id', Category::ID_RENT);
+    } //scopeSale
+
+    public function scopePrice($query, int $from, int $to)
+    {
+        return $to > 0
+            ? $query->whereBetween('price', [$from, $to])
+            : $query->where('price', '>=', $from);
+    } //scopePrice
+
+    public function scopeSqm($query, int $from, int $to)
+    {
+        return $to > 0
+            ? $query->whereBetween('price_m2', [$from, $to])
+            : $query->where('price_m2', '>=', $from);
+    } //scopeSqm
+
+    public function scopeRooms($query, array $rooms)
+    {
+        //Определения наличия команды 4+ в массиве
+        $more = false;
+        if(in_array(needle: 'more', haystack: $rooms)){
+            $more = true;
+            $key = array_search(needle: 'more', haystack: $rooms);
+            unset($rooms[$key]);
+            
+            if(count($rooms) < 1)
+                return $query->where('rooms', '>=', 4);
+        }
+
+        if(count($rooms) < 1)
+            return $query;
+
+        return $query->whereIn('rooms', $rooms)
+            ->when($more, function($query){
+                return $query->orWhere('rooms', '>=', 4);
+            });
+    } //scopeRooms
+
+    /**
+     *      Преобразования изображений
      */
     public function registerMediaConversions(?Media $media = null): void
     {
@@ -107,9 +155,14 @@ class Apartment extends Model implements HasMedia
         $this->addMediaConversion('thumb_admin')
             ->fit(Manipulations::FIT_STRETCH, 50, 50);
 
-        //Миниатюра для клиентской части
-        $this->addMediaConversion('thumb')
-            ->fit(Manipulations::FIT_MAX, 100, 100);
+        //Миниатюра для слайдера
+        $this->addMediaConversion('thumb_slider')
+            ->fit(Manipulations::FIT_MAX, 200, 150);
+
+        //Миниатюра для каталога
+        $this->addMediaConversion('thumb_catalog')
+            ->crop(Manipulations::CROP_CENTER, 277, 300);
+
     } //registerMediaConversions
 
     /**
@@ -123,15 +176,6 @@ class Apartment extends Model implements HasMedia
     /**
      *      Геттеры
      */
-    public function getPriceAttribute(): int
-    {
-        if($this->category_id === Category::ID_SALE)
-            return $this->price_sale;
-        elseif($this->category_id === Category::ID_RENT)
-            return $this->price_rent;
-        else
-            return 0;
-    } //getPriceAttribute
 
     public function getImageOriginal(int $index = 0): ?string
     {
@@ -158,18 +202,33 @@ class Apartment extends Model implements HasMedia
         return $this->hasMedia() ? $this->getMedia()->first()->getUrl('thumb_admin') : null;
     } //getThumbAdmin
 
-    public function getThumbs(): array
+    public function getSliderThumbs(): array
     {
         if($this->hasMedia())
             return Arr::map(array: $this->getMedia()->all(), callback: function($item){
-                return $item->getUrl('thumb');
+                return $item->getUrl('thumb_slider');
             });
         else
             return [];
-    } //getThumbs
+    } //getSliderThumbs
 
-    public function getThumb(int $index = 0): string
+    public function getCatalogThumbs(): array
     {
-        return $this->getMedia()[$index]->getUrl('thumb');
-    } //getThumb
+        if($this->hasMedia())
+            return Arr::map(array: $this->getMedia()->all(), callback: function($item){
+                return $item->getUrl('thumb_catalog');
+            });
+        else
+            return [];
+    } //getSliderThumbs
+
+    public function getSliderThumb(int $index = 0): ?string
+    {
+        return $this->hasMedia() ? $this->getMedia()[$index]->getUrl('thumb_slider') : null;
+    } //getSliderThumb
+
+    public function getCatalogThumb(int $index = 0): ?string
+    {
+        return $this->hasMedia() ?  $this->getMedia()[$index]->getUrl('thumb_catalog') : null;
+    } //getCatalogThumb
 }

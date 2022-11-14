@@ -17,4 +17,9 @@ class HomeController extends Controller
     {
         return view('client.main.index');
     } //main
+
+    public function catalog()
+    {
+        return view('client.catalog.index');
+    } //catalog
 }
