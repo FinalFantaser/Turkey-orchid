@@ -19,10 +19,19 @@
                 <img src="img/catalog/arrowAll.png" alt="all">
             </a>
 
-            <div class="catalog__window">
+            <div
+                @touchstart="touchstart($event)"
+                @touchmove="touchmove($event)"
+                @touchend="touchend($event)"
+                @mousedown.prevent="mousedown($event)"
+                @mousemove.prevent="mousemove($event)"
+                @mouseup.prevent="mouseup($event)"
+                @mouseleave="mouseleave($event)"
+                ref="window"
+                class="catalog__window">
                 <div ref="field" class="catalog__field">
 
-                    <div v-for="card in stateCatalog" class="catalog__card">
+                    <div ref="card" v-for="card in stateCatalog" class="catalog__card">
                         <div class="catalog__card__top">
                             <div class="catalog__card__img">
                                 <img :src="card.thumb.slider" alt="flat">
@@ -53,8 +62,8 @@
                     <path d="M1.5 1L8.5 8L1.5 15" stroke="white" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
 
-                <div class="catalog__wrap__arrow catalog__wrap__arrow--prev"></div>
-                <div class="catalog__wrap__arrow catalog__wrap__arrow--next"></div>
+                <div @click="slidePrev()" ref="prev" class="catalog__wrap__arrow catalog__wrap__arrow--prev"></div>
+                <div @click="slideNext()" ref="next" class="catalog__wrap__arrow catalog__wrap__arrow--next"></div>
 
             </div>
         </div>
@@ -69,7 +78,13 @@ export default {
     name: "Catalog",
     data() {
         return {
-            sale: true
+            sale: true,
+            startPoint: '',
+            swipeAction: '',
+            endPoint: '',
+            sliderCounter: 0,
+            mouseMoveFlag: false,
+            lengthCardAndBetweenCards: ''
         }
     },
     computed: {
@@ -81,8 +96,114 @@ export default {
         }
     },
     methods: {
+        betweenCards() {
+            return (this.lengthCardAndBetweenCards - (this.$refs.card[0].clientWidth * this.stateCatalog.length)) / (this.stateCatalog.length -1)
+        },
+        numberIntegerVisibleCards() {
+            return Math.floor((this.$refs.window.clientWidth + this.betweenCards()) / (this.$refs.card[0].clientWidth + this.betweenCards()))
+        },
+        partCard() {
+            return (this.$refs.window.clientWidth + this.betweenCards()) / (this.$refs.card[0].clientWidth + this.betweenCards()) - Math.trunc((this.$refs.window.clientWidth + this.betweenCards()) / (this.$refs.card[0].clientWidth + this.betweenCards()))
+        },
+        lastCard() {
+            if ( (this.sliderCounter + this.numberIntegerVisibleCards()) >= (this.$refs.card.length) && this.$refs.card.length >= this.numberIntegerVisibleCards()) {
+                this.sliderCounter = this.$refs.card.length - this.numberIntegerVisibleCards() - 1
+                return true
+            }
+            return false
+        },
+        checkNumCards() {
+            if (this.$refs.card.length > this.numberIntegerVisibleCards()) {
+                return true
+            }
+            return false
+        },
+        touchstart(e) {
+            this.startPoint = e.changedTouches[0].pageX;
+        },
+        touchmove(e) {
+            this.swipeAction = e.changedTouches[0].pageX - this.startPoint;
+            this.$refs.field.style.transform = `translateX(${this.swipeAction + (-(this.$refs.card[0].scrollWidth + this.betweenCards()) * this.sliderCounter)}px)`;
+        },
+        touchend(e) {
+            this.endPoint = e.changedTouches[0].pageX;
+            if (Math.abs(this.startPoint - this.endPoint) > 50 && this.checkNumCards()) {
+                if (this.endPoint < this.startPoint) {
+                    this.slideNext();
+                } else {
+                    this.slidePrev();
+                }
+            } else {
+                this.$refs.field.style.transform = `translateX(-${(this.$refs.card[0].scrollWidth + this.betweenCards()) * this.sliderCounter}px)`;
+            }
+        },
+        mousedown(e) {
+            this.startPoint = e.pageX;
+            this.mouseMoveFlag = true;
+        },
+        mousemove(e) {
+            if (this.mouseMoveFlag) {
+                this.swipeAction = e.pageX - this.startPoint;
+                this.$refs.field.style.transform = `translateX(${this.swipeAction + (-(this.$refs.card[0].scrollWidth + this.betweenCards()) * this.sliderCounter)}px)`;
+            }
+        },
+        mouseup(e) {
+            this.mouseMoveFlag = false
+            this.endPoint = e.pageX;
+            if (Math.abs(this.startPoint - this.endPoint) > 50 && this.checkNumCards()) {
+                if (this.endPoint < this.startPoint) {
+                    this.slideNext();
+                } else {
+                    this.slidePrev();
+                }
+            } else if(Math.abs(this.startPoint - this.endPoint) === 0) {
+                return
+            }
+            else {
+                this.$refs.field.style.transform = `translateX(-${(this.$refs.card[0].scrollWidth + this.betweenCards()) * this.sliderCounter}px)`;
+            }
+        },
+        mouseleave() {
+            if (this.mouseMoveFlag) {
+                this.$refs.field.style.transform = `translateX(-${(this.$refs.card[0].scrollWidth + this.betweenCards()) * this.sliderCounter}px)`;
+            }
+            this.mouseMoveFlag = false
+        },
+        slidePrev() {
+            if (!this.checkNumCards()) {
+                console.log(1)
+                return
+            }
+            this.sliderCounter = Math.floor(this.sliderCounter)
+            this.sliderCounter--;
+            if (this.sliderCounter <= 0) {
+                this.sliderCounter = 0;
+            }
+            if (this.lastCard()) {
+                this.$refs.field.style.transform = `translateX(-${this.$refs.field.scrollWidth - this.$refs.window.clientWidth - (this.$refs.card[0].scrollWidth + this.betweenCards())}px)`
+                this.sliderCounter = this.$refs.card.length - this.numberIntegerVisibleCards() - 1
+                return
+            }
+            this.$refs.field.style.transform = `translateX(-${(this.$refs.card[0].scrollWidth + this.betweenCards()) * this.sliderCounter}px)`;
+        },
+        slideNext() {
+            if (!this.checkNumCards()) {
+                return
+            }
+            this.sliderCounter++
+            if (this.sliderCounter >= this.$refs.card.length) {
+                this.sliderCounter = this.$refs.card.length - 1;
+            }
+            if (this.lastCard()) {
+                this.$refs.field.style.transform = `translateX(-${this.$refs.field.scrollWidth - this.$refs.window.clientWidth}px)`
+                this.sliderCounter = this.$refs.card.length - this.numberIntegerVisibleCards() - this.partCard()
+                return
+            }
+            this.$refs.field.style.transform = `translateX(-${(this.$refs.card[0].scrollWidth + this.betweenCards()) * this.sliderCounter}px)`;
+        },
         async getCatalogRent() {
             this.$refs.field.style = ''
+            this.sliderCounter = 0
             await this.$store.dispatch('catalogRent/getCatalogRent')
             if (this.$store.getters['catalogRent/stateCatalogRent'].length === 0) {
                 return
@@ -91,6 +212,7 @@ export default {
         },
         async getCatalogSale() {
             this.$refs.field.style = ''
+            this.sliderCounter = 0
             await this.$store.dispatch('catalogSale/getCatalogSale')
             if (this.$store.getters['catalogSale/stateCatalogSale'].length === 0) {
                 return
@@ -121,18 +243,23 @@ export default {
     },
     async mounted() {
         await this.getCatalogSale()
-        slider(
-            '.catalog__window',
-            '.catalog__field',
-            '.catalog__card',
-            false,
-            false,
-            false,
-            '.catalog__wrap__arrow--prev',
-            '.catalog__wrap__arrow--next',
-            false,
-            false
-        );
+        this.lengthCardAndBetweenCards = this.$refs.card[this.stateCatalog.length - 1].getBoundingClientRect().right - this.$refs.window.getBoundingClientRect().left;
+        // slider(
+        //     '.catalog__window',
+        //     '.catalog__field',
+        //     '.catalog__card',
+        //     false,
+        //     false,
+        //     false,
+        //     '.catalog__wrap__arrow--prev',
+        //     '.catalog__wrap__arrow--next',
+        //     false,
+        //     false
+        // );
+        // console.log(this.$refs.card.length)
+    },
+    updated() {
+        this.lengthCardAndBetweenCards = this.$refs.card[this.stateCatalog.length - 1].getBoundingClientRect().right - this.$refs.window.getBoundingClientRect().left;
     }
 }
 </script>
